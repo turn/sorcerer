@@ -1,0 +1,7 @@
+# @author Tommy Shiou <tshiou@turn.com>
+
+# Build results
+/target/
+
+# Intellij files
+*.iml

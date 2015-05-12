@@ -1,0 +1,27 @@
+---
+!task
+    name: test_task_1
+    next:
+        - test_task_2
+        - test_task_3
+    exec: fork
+---
+!task
+    name: test_task_2
+    next: 
+        - test_task_4
+---
+!task
+    name: test_task_3
+    next: 
+        - test_task_4
+    criticality: LOW
+---
+!task
+    name: test_task_4
+    next: 
+        - test_task_5
+---
+!task
+    name: test_task_5
+    next:

@@ -1,0 +1,8 @@
+!module
+    name: test_module
+    pipelines: 
+        - test_pipeline
+    storage: 
+        !memory
+        dummy: "blah"
+---

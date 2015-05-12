@@ -1,0 +1,5 @@
+!pipeline
+    name: test_pipeline
+    init: test_task_1
+    interval: 10
+    lookback: 0
