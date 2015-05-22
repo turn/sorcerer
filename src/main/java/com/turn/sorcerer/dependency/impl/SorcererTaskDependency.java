@@ -5,7 +5,6 @@
 
 package com.turn.sorcerer.dependency.impl;
 
-import com.turn.sorcerer.exception.SorcererException;
 import com.turn.sorcerer.dependency.Dependency;
 import com.turn.sorcerer.injector.SorcererInjector;
 import com.turn.sorcerer.status.StatusManager;
@@ -13,12 +12,19 @@ import com.turn.sorcerer.task.SorcererTask;
 import com.turn.sorcerer.task.Task;
 import com.turn.sorcerer.task.type.TaskType;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Class Description Here
  *
  * @author tshiou
  */
 public class SorcererTaskDependency implements Dependency {
+
+	private static final Logger logger =
+			LogManager.getFormatterLogger(SorcererTaskDependency.class);
+
 
 	private final TaskType task;
 	private Integer customIterNo = null;
@@ -32,25 +38,26 @@ public class SorcererTaskDependency implements Dependency {
 		this.customIterNo = iterNo;
 	}
 
-	public SorcererTaskDependency(Class<? extends Task> taskClass)
-			throws SorcererException {
+	public SorcererTaskDependency(Class<? extends Task> taskClass) {
 
 		SorcererTask anno = taskClass.getAnnotation(SorcererTask.class);
 		if (anno == null) {
-			throw new SorcererException("Annotation not found on " + taskClass.toString());
+			logger.error("Annotation not found on " + taskClass.toString());
+			this.task = null;
+			return;
 		}
 
 		String taskName = anno.name();
 		if (taskName == null) {
-			throw new SorcererException("No taskName found in annotation on " +
-					taskClass.toString());
+			logger.error("No taskName found in annotation on " + taskClass.toString());
+			this.task = null;
+			return;
 		}
 
 		this.task = SorcererInjector.get().getTaskType(taskName);
 	}
 
-	public SorcererTaskDependency(Class<? extends Task> taskClass, int iterNo)
-			throws SorcererException {
+	public SorcererTaskDependency(Class<? extends Task> taskClass, int iterNo) {
 		this(taskClass);
 		this.customIterNo = iterNo;
 	}
@@ -66,7 +73,7 @@ public class SorcererTaskDependency implements Dependency {
 
 	@Override
 	public boolean check(int iterNo) {
-		return StatusManager.get().isTaskComplete(
+		return task != null && StatusManager.get().isTaskComplete(
 				task, customIterNo == null ? iterNo : customIterNo);
 	}
 }

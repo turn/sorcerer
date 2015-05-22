@@ -5,7 +5,6 @@
 
 package com.turn.sorcerer.task;
 
-import com.turn.sorcerer.exception.SorcererException;
 import com.turn.sorcerer.dependency.Dependency;
 
 import java.util.Collection;
@@ -16,7 +15,7 @@ import java.util.Collection;
  * @author tshiou
  */
 public interface Task {
-	void exec(final Context context) throws SorcererException;
+	void exec(final Context context) throws Exception;
 
 	Collection<Dependency> getDependencies(int iterNo);
 }
