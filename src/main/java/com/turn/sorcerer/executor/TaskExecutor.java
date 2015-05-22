@@ -10,11 +10,13 @@ import com.turn.sorcerer.executor.TaskExecutionResult.ExecutionStatus;
 import com.turn.sorcerer.metrics.MetricUnit;
 import com.turn.sorcerer.metrics.MetricsMonitor;
 import com.turn.sorcerer.task.Context;
-import com.turn.sorcerer.task.type.TaskType;
 import com.turn.sorcerer.task.executable.ExecutableTask;
 import com.turn.sorcerer.task.executable.TaskFactory;
+import com.turn.sorcerer.task.type.TaskType;
+import com.turn.sorcerer.util.TypedDictionary;
 
 import java.text.SimpleDateFormat;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.apache.logging.log4j.LogManager;
@@ -43,13 +45,11 @@ public class TaskExecutor implements Callable<TaskExecutionResult> {
 	private int jobId;
 	protected final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd");
 
-	private String[] taskArgs;
+	private TypedDictionary taskArgs;
 
-	public TaskExecutor(TaskType t, int jobId, String[] taskArgs, boolean adhoc) {
+	public TaskExecutor(TaskType t, int jobId, Map<String, String> taskArgs, boolean adhoc) {
 		this.taskType = t;
-		if (taskArgs != null) {
-			this.taskArgs = taskArgs.clone();
-		}
+		this.taskArgs.putAll(taskArgs);
 		this.jobId = jobId;
 		this.adhoc = adhoc;
 	}
@@ -67,8 +67,10 @@ public class TaskExecutor implements Callable<TaskExecutionResult> {
 		// Get instance of task
 		ExecutableTask task = TaskFactory.get().getExecutableTask(this.taskType, this.jobId);
 
+		Context context = new Context(jobId, taskArgs);
+
 		// Parameterize the task
-		task.parameterize(taskArgs);
+		task.parameterize(context);
 
 		// Normal (non-adhoc) pipeline checks
 		if (!adhoc) {
@@ -115,7 +117,6 @@ public class TaskExecutor implements Callable<TaskExecutionResult> {
 			MetricUnit unit = MetricUnit.getMetricUnit(false, task.name(), TASK_START_TIME_METRIC);
 			MetricsMonitor.getInstance().addGenericMetric(unit, taskStartTime);
 
-			Context context = new Context(jobId);
 			task.execute(context);
 
 			taskFinishTime = System.currentTimeMillis();

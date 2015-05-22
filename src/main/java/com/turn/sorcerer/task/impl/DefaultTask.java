@@ -21,6 +21,11 @@ import java.util.List;
 @SorcererTask(name = "_default_task")
 public class DefaultTask implements Task {
 	@Override
+	public void init(Context context) {
+
+	}
+
+	@Override
 	public void exec(Context context) throws SorcererException {	}
 
 	@Override

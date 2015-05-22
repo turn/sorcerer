@@ -33,6 +33,11 @@ public class ForkTask implements Task {
 	}
 
 	@Override
+	public void init(Context context) {
+
+	}
+
+	@Override
 	public void exec(Context context) throws SorcererException {
 		logger.info("Task " + type.getName() + " forking tasks " + type.getNextTaskNames());
 	}

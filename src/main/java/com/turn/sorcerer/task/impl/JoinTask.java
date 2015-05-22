@@ -32,6 +32,11 @@ public class JoinTask implements Task {
 	}
 
 	@Override
+	public void init(Context context) {
+
+	}
+
+	@Override
 	public void exec(Context context) throws SorcererException {
 		logger.info("Placeholder join task " + name);
 	}

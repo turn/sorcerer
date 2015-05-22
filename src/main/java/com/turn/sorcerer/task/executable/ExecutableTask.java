@@ -14,10 +14,7 @@ import com.turn.sorcerer.task.Task;
 import com.turn.sorcerer.task.type.TaskType;
 import com.turn.sorcerer.util.Constants;
 
-import java.util.List;
-
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 
 /**
  * Class Description Here
@@ -32,25 +29,17 @@ public class ExecutableTask {
 	private final TaskType type;
 	private final Task task;
 
-	List<String> taskParameters = Lists.newArrayList();
-
 	protected ExecutableTask(TaskType type, Task task, int seq) {
 		this.type = type;
 		this.task = task;
 		this.sequenceNumber = seq;
 	}
 
-	public void parameterize(String[] args) {
-		if (args == null || args.length == 0) {
-			return;
-		}
+	public void parameterize(Context context) {
 
-		for (String arg : args) {
-			if (Constants.ADHOC.equals(arg)) {
-				this.adhoc = true;
-			}
-			taskParameters.add(arg);
-		}
+		this.adhoc = context.getProperties().getBool(Constants.ADHOC);
+
+		task.init(context);
 	}
 
 	public boolean checkDependencies() {
@@ -78,14 +67,14 @@ public class ExecutableTask {
 
 			task.exec(context);
 
-		} catch (SorcererException e) {
+		} catch (Exception e) {
 			StatusManager.get()
 					.removeInProgressTaskStatus(this.type, sequenceNumber);
 			if (!adhoc) {
 				StatusManager.get().commitTaskStatus(
 						this.type, sequenceNumber, Status.ERROR, true);
 			}
-			throw e;
+			throw new SorcererException(e);
 		}
 
 		StatusManager.get().commitTaskStatus(this.type, sequenceNumber, Status.SUCCESS, true);

@@ -36,11 +36,11 @@ public class PipelineExecutor implements Runnable {
 	private final int interval;
 
 	public PipelineExecutor(PipelineType pipelineType, int jobId) {
-		this(pipelineType, jobId, new HashMap<TaskType, String[]>(), false, false);
+		this(pipelineType, jobId, new HashMap<TaskType, Map<String, String>>(), false, false);
 	}
 
 	public PipelineExecutor(PipelineType pipelineType,
-	                        int jobId, Map<TaskType, String[]> taskArgMap,
+	                        int jobId, Map<TaskType, Map<String, String>> taskArgMap,
 	                        boolean adhoc, boolean overwriteTasks) {
 		this.interval = pipelineType.getInterval();
 

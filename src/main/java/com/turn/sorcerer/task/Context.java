@@ -5,6 +5,8 @@
 
 package com.turn.sorcerer.task;
 
+import com.turn.sorcerer.util.TypedDictionary;
+
 import java.util.Map;
 
 import com.google.common.collect.Maps;
@@ -17,10 +19,12 @@ import com.google.common.collect.Maps;
 public class Context {
 
 	private final int iterationNumber;
+	private final TypedDictionary properties = new TypedDictionary();
 	private final Map<String, Long> metrics = Maps.newHashMap();
 
-	public Context(int iterationNumber) {
+	public Context(int iterationNumber, TypedDictionary parameters) {
 		this.iterationNumber = iterationNumber;
+		properties.putAll(parameters);
 	}
 
 	public int getIterationNumber() {
@@ -29,5 +33,13 @@ public class Context {
 
 	public void addMetric(String key, Long value) {
 		metrics.put(key, value);
+	}
+
+	public void putProperty(String key, Object value) {
+		properties.put(key, value);
+	}
+
+	public TypedDictionary getProperties() {
+		return this.properties;
 	}
 }

@@ -15,6 +15,8 @@ import java.util.Collection;
  * @author tshiou
  */
 public interface Task {
+	void init(final Context context);
+
 	void exec(final Context context) throws Exception;
 
 	Collection<Dependency> getDependencies(int iterNo);

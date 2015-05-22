@@ -5,7 +5,6 @@
 
 package com.turn.sorcerer.tasks;
 
-import com.turn.sorcerer.exception.SorcererException;
 import com.turn.sorcerer.dependency.Dependency;
 import com.turn.sorcerer.task.Context;
 import com.turn.sorcerer.task.Task;
@@ -25,7 +24,10 @@ public abstract class TestTask implements Task {
 			LogManager.getFormatterLogger(TestTask.class);
 
 	@Override
-	public void exec(Context context) throws SorcererException {
+	public void init(Context context) {}
+
+	@Override
+	public void exec(Context context) throws Exception {
 		for (int i = getTaskCount(); i >= 0 ; i--) {
 			logger.info(name() + " count " + i + " for sequence number " + context.getIterationNumber());
 			try {

@@ -36,7 +36,7 @@ class TaskScheduler implements Runnable {
 	private static final Logger logger =
 			LogManager.getFormatterLogger(TaskScheduler.class);
 
-	private Map<TaskType, String[]> taskArgMap;
+	private Map<TaskType, Map<String, String>> taskArgMap;
 	private Set<String> runningTasks;
 
 	private final ExecutablePipeline pipeline;
@@ -50,7 +50,7 @@ class TaskScheduler implements Runnable {
 	public TaskScheduler(ExecutablePipeline pipeline,
 	                     int jobId,
 	                     int numOfThreads,
-	                     Map<TaskType, String[]> taskArgMap,
+	                     Map<TaskType, Map<String, String>> taskArgMap,
 	                     boolean adhoc,
 	                     boolean overwriteTasks
 	) {
