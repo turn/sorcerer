@@ -19,4 +19,12 @@ public class SorcererException extends Exception {
 	public SorcererException(String message) {
 		super(message);
 	}
+
+	public SorcererException(Throwable t) {
+		super(t);
+	}
+
+	public SorcererException(String message, Throwable t) {
+		super(message, t);
+	}
 }
