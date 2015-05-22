@@ -35,6 +35,8 @@ public class TaskType {
 		LOW
 	}
 
+	private boolean enabled = true;
+
 	private String name;
 
 	private List<String> next;
@@ -42,6 +44,10 @@ public class TaskType {
 	private String exec = "class";
 
 	private CRITICALITY criticality = CRITICALITY.HIGH;
+
+	public boolean isEnabled() {
+		return this.enabled;
+	}
 
 	public String getName() {
 		return this.name;

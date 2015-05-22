@@ -73,11 +73,11 @@ public class TaskExecutor implements Callable<TaskExecutionResult> {
 		// Normal (non-adhoc) pipeline checks
 		if (!adhoc) {
 			// Skip if task is disabled.
-//			if (!task.isEnabled()) {
-//				status.setStatus(ExecutionStatus.DISABLED);
-//				LOGGER.debug("%s is disabled. Exiting", task.name());
-//				return status;
-//			}
+			if (!taskType.isEnabled()) {
+				status.setStatus(ExecutionStatus.DISABLED);
+				LOGGER.debug("%s is disabled. Exiting", task.name());
+				return status;
+			}
 
 			// Skip if task is already completed
 			if (task.isCompleted()) {
