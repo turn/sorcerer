@@ -79,6 +79,11 @@ public class SorcererInjector {
 		) != null;
 	}
 
+	public PipelineType getPipelineType(final String name) {
+		return INJECTOR.getInstance(
+				Key.get(PipelineType.class, Names.named(name)));
+	}
+
 	public Set<PipelineType> getPipelines() {
 		return INJECTOR.getInstance(Key.get(setOfPipelines));
 	}

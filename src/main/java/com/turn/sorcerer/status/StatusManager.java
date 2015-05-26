@@ -65,6 +65,24 @@ public class StatusManager {
 		}
 	}
 
+	public Status checkTaskStatus(String taskName, int seq) {
+		try {
+			return taskStorage.checkStatus(taskName, seq);
+		} catch (IOException e) {
+			logger.error(e);
+		}
+		return Status.PENDING;
+	}
+
+	public Status checkPipelineStatus(String pipelineName, int seq) {
+		try {
+			return pipelineStorage.checkStatus(pipelineName, seq);
+		} catch (IOException e) {
+			logger.error(e);
+		}
+		return Status.PENDING;
+	}
+
 	public void removeInProgressTaskStatus(TaskType type, int seq) {
 		removeInProgressTaskStatus(type.getName(), seq);
 	}
