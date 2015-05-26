@@ -178,7 +178,7 @@ public class HDFSStatusStorage implements StatusStorage {
 	@Override
 	public Status checkStatus(String identifier, int id) throws IOException {
 		if (id == -1) {
-			return Status.DEFAULT;
+			return Status.PENDING;
 		}
 
 		if (fs == null) {
@@ -208,7 +208,7 @@ public class HDFSStatusStorage implements StatusStorage {
 			return Status.ERROR;
 		}
 
-		return Status.DEFAULT;
+		return Status.PENDING;
 	}
 
 	@Override

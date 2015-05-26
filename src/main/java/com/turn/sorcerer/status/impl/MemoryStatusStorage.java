@@ -90,7 +90,7 @@ public class MemoryStatusStorage implements StatusStorage {
 		ConcurrentMap<Status, DateTime> statuses = store.get(identifier, id);
 
 		if (statuses == null || statuses.size() == 0) {
-			return Status.DEFAULT;
+			return Status.PENDING;
 		}
 
 		Set<Status> stati = statuses.keySet();
@@ -107,7 +107,7 @@ public class MemoryStatusStorage implements StatusStorage {
 			return Status.ERROR;
 		}
 
-		return Status.DEFAULT;
+		return Status.PENDING;
 	}
 
 	@Override

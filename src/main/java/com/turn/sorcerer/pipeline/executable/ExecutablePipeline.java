@@ -113,14 +113,14 @@ public abstract class ExecutablePipeline {
 	 *
 	 * <p>
 	 * Commits status of {@link Status} type.
-	 * If status {@link Status#DEFAULT}, then any existing status is cleared
+	 * If status {@link Status#PENDING}, then any existing status is cleared
 	 * </p>
 	 *
 	 * @param status {@link Status}
 	 */
 	public void commitStatus(Status status) {
 
-		if (Status.DEFAULT.equals(status)) {
+		if (Status.PENDING.equals(status)) {
 			StatusManager.get().clearPipelineStatus(this.pipelineType, this.iterationNum);
 		} else {
 			StatusManager.get().commitPipelineStatus(this.pipelineType, this.iterationNum, status);

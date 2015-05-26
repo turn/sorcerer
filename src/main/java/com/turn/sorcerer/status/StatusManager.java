@@ -50,7 +50,7 @@ public class StatusManager {
 	private void commitTaskStatus(
 			String taskName, int seq, Status status, DateTime time, boolean overwrite) {
 
-		if (Status.DEFAULT.equals(status)) {
+		if (Status.PENDING.equals(status)) {
 			try {
 				taskStorage.clearAllStatuses(taskName, seq);
 			} catch (IOException e) {

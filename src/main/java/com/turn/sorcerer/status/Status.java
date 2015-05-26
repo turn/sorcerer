@@ -12,15 +12,15 @@ package com.turn.sorcerer.status;
  */
 public enum Status {
 
-	DEFAULT("_PENDING"),
-	IN_PROGRESS("_RUNNING"),
-	SUCCESS("_SUCCESS"),
-	ERROR("_ERROR"),
+	PENDING("PENDING"),
+	IN_PROGRESS("RUNNING"),
+	SUCCESS("SUCCESS"),
+	ERROR("ERROR"),
 	;
 
 	String string;
 
-	Status(String string) {
+	private Status(String string) {
 		this.string = string;
 	}
 
