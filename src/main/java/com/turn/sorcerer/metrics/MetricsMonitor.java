@@ -78,7 +78,7 @@ public class MetricsMonitor {
 
 		// Update metrics with latest success time
 		if (statusSuccessTime > serviceSuccessTime) {
-			logger.info("%s status file modified time greater than existing last success time. " +
+			logger.debug("%s status file modified time greater than existing last success time. " +
 					"Replacing metric.", taskName);
 			METRICS.put(unit, statusSuccessTime);
 		}

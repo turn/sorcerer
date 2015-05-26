@@ -13,6 +13,7 @@ import com.turn.sorcerer.task.Context;
 import com.turn.sorcerer.task.executable.ExecutableTask;
 import com.turn.sorcerer.task.executable.TaskFactory;
 import com.turn.sorcerer.task.type.TaskType;
+import com.turn.sorcerer.util.Constants;
 import com.turn.sorcerer.util.TypedDictionary;
 
 import java.text.SimpleDateFormat;
@@ -52,6 +53,7 @@ public class TaskExecutor implements Callable<TaskExecutionResult> {
 
 		this.taskArgs = new TypedDictionary();
 		this.taskArgs.putAll(taskArgs);
+		this.taskArgs.put(Constants.ADHOC, adhoc);
 		this.jobId = jobId;
 		this.adhoc = adhoc;
 	}
