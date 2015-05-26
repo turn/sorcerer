@@ -50,12 +50,10 @@ public class PipelineFactory {
 		ExecutablePipeline p = pipelineInstances.get(type.getName(), seq);
 
 		if (p == null) {
-			logger.debug("Creating new scheduled pipeline");
 			p = new ScheduledPipeline(seq, type);
 			pipelineInstances.put(type.getName(), seq, p);
 		}
 
-		logger.debug("Returning " + p);
 		return p;
 	}
 

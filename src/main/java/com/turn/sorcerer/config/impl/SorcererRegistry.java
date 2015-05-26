@@ -107,6 +107,9 @@ public class SorcererRegistry {
 	}
 
 	protected void registerModule(ModuleType moduleType) {
+
+		logger.debug("Registering module " + moduleType);
+
 		modules.add(moduleType);
 
 		// Register addPackages

@@ -46,6 +46,10 @@ public class ModuleType {
 		return this.email;
 	}
 
+	public List<String> getPipelines() {
+		return this.pipelines;
+	}
+
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
 				.add("name", this.name)

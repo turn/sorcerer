@@ -79,15 +79,12 @@ public abstract class ExecutablePipeline {
 			return;
 		}
 
-		logger.debug("Initializing " + task);
 		taskCompletionMap.put(task.getName(), false);
 //		taskGraph.put(task, null);
 
 		if (task.getNextTaskNames() == null) {
 			return;
 		}
-
-		logger.debug("Looking at " + task.getNextTaskNames());
 
 		for (String nextTaskName : task.getNextTaskNames()) {
 
@@ -98,7 +95,6 @@ public abstract class ExecutablePipeline {
 			TaskType nextTask = SorcererInjector.get().getTaskType(nextTaskName);
 			taskGraph.put(nextTask.getName(), task);
 
-			logger.debug("Next up: " + nextTask);
 			initTask(nextTask);
 		}
 	}

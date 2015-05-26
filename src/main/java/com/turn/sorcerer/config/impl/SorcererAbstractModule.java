@@ -66,13 +66,8 @@ public class SorcererAbstractModule extends AbstractModule {
 		}
 
 
-		// Pipelines
-		Multibinder<PipelineType> pipelineSet = Multibinder.newSetBinder(binder(), PipelineType.class);
 
 		for (Map.Entry<String, PipelineType> entry : pipelines.entrySet()) {
-			// Bind pipelines to run
-			pipelineSet.addBinding().toInstance(entry.getValue());
-
 			// Bind pipeline type
 			bind(PipelineType.class).annotatedWith(Names.named(entry.getKey()))
 					.toInstance(entry.getValue());
@@ -86,6 +81,12 @@ public class SorcererAbstractModule extends AbstractModule {
 
 		// Bind module and configurations
 		bind(ModuleType.class).toInstance(module);
+
+		// Pipelines to run
+		Multibinder<PipelineType> pipelineSet = Multibinder.newSetBinder(binder(), PipelineType.class);
+		for (String pipelineName : module.getPipelines()) {
+			pipelineSet.addBinding().toInstance(pipelines.get(pipelineName));
+		}
 
 		bind(EmailType.class).toInstance(module.getAdminEmail());
 
