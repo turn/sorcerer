@@ -19,10 +19,11 @@ import com.google.common.collect.Maps;
 public class Context {
 
 	private final int iterationNumber;
-	private final TypedDictionary properties = new TypedDictionary();
+	private final TypedDictionary properties;
 	private final Map<String, Long> metrics = Maps.newHashMap();
 
 	public Context(int iterationNumber, TypedDictionary parameters) {
+		properties = new TypedDictionary();
 		this.iterationNumber = iterationNumber;
 		properties.putAll(parameters);
 	}

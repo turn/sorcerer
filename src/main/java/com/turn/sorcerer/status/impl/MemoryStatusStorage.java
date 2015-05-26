@@ -37,6 +37,11 @@ public class MemoryStatusStorage implements StatusStorage {
 	}
 
 	@Override
+	public void init() throws IOException {
+
+	}
+
+	@Override
 	public StatusStorage setType(String type) {
 		return this;
 	}

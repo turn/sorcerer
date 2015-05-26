@@ -5,7 +5,6 @@
 
 package com.turn.sorcerer.util;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
@@ -16,7 +15,11 @@ import com.google.common.collect.Maps;
  * @author tshiou
  */
 public class TypedDictionary {
-	private HashMap<String, Object> map = Maps.newHashMap();
+	private Map<String, Object> map;
+
+	public TypedDictionary() {
+		map = Maps.newHashMap();
+	}
 
 	public <E> E get(String key, Class<E> type) {
 		if (!map.containsKey(key)) return null;
@@ -66,10 +69,18 @@ public class TypedDictionary {
 	}
 
 	public void putAll(Map<String, ? extends Object> props) {
+		if (props == null || props.size() == 0) {
+			return;
+		}
+
 		this.map.putAll(props);
 	}
 
 	public void putAll(TypedDictionary other) {
+		if (other == null || other.size() == 0) {
+			return;
+		}
+
 		this.map.putAll(other.map);
 	}
 

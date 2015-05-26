@@ -6,7 +6,6 @@
 package com.turn.sorcerer.pipeline.executable;
 
 import com.turn.sorcerer.injector.SorcererInjector;
-import com.turn.sorcerer.pipeline.executable.impl.ScheduledPipeline;
 import com.turn.sorcerer.pipeline.type.PipelineType;
 import com.turn.sorcerer.status.Status;
 import com.turn.sorcerer.status.StatusManager;
@@ -27,7 +26,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class ExecutablePipeline {
 	private final Logger logger =
-			LogManager.getFormatterLogger(ScheduledPipeline.class);
+			LogManager.getFormatterLogger(ExecutablePipeline.class);
 	protected final int iterationNum;
 	protected final PipelineType pipelineType;
 
