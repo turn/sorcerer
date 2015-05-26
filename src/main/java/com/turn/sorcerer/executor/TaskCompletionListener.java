@@ -15,7 +15,6 @@ import com.turn.sorcerer.util.email.Emailer;
 import java.util.Set;
 
 import com.google.common.util.concurrent.FutureCallback;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,7 +45,7 @@ public class TaskCompletionListener implements FutureCallback<TaskExecutionResul
 	public void onSuccess(TaskExecutionResult executionResult) {
 		TaskType t = executionResult.getTaskType();
 		ExecutionStatus executionStatus = executionResult.getStatus();
-		logger.debug("Entering completion monitor callback method " + pipeline + " task="
+		logger.debug("Entering task callback method " + pipeline + " task="
 				+ t.getName() + " status=" + executionStatus);
 
 
@@ -62,10 +61,10 @@ public class TaskCompletionListener implements FutureCallback<TaskExecutionResul
 
 	@Override
 	public void onFailure(Throwable throwable) {
-		logger.debug(task.getName() + " failed!");
+		logger.debug(pipeline + " - " + task.getName() + " failed!");
+		logger.error(new Exception(throwable));
 		StatusManager.get().commitTaskStatus(task, pipeline.getId(), Status.ERROR);
 		StatusManager.get().removeInProgressTaskStatus(task, pipeline.getId());
-		logger.error(ExceptionUtils.getStackTrace(throwable));
 		runningTasks.remove(task.getName());
 
 		new Emailer(task.getName() + " failed", new Exception(throwable)).send();
