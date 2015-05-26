@@ -8,10 +8,17 @@ package com.turn.sorcerer.status.impl;
 import com.turn.sorcerer.status.Status;
 import com.turn.sorcerer.status.StatusStorage;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
+import com.google.inject.BindingAnnotation;
+import com.google.inject.Inject;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -33,10 +40,29 @@ public class HDFSStatusStorage implements StatusStorage {
 
 	private static final Joiner JOINER = Joiner.on(Path.SEPARATOR);
 
-	private final String root;
+	private String type;
 
-	public HDFSStatusStorage(String root) {
-		this.root = root;
+	@Inject
+	@HDFSStorageRoot
+	private String root;
+
+	public void init() throws IOException {
+		if (fs == null) {
+			try {
+				fs = FileSystem.get(new Configuration());
+			} catch (IOException e) {
+				logger.error(e);
+				throw e;
+			}
+		}
+
+		if (fs.exists(new Path(root)) == false) {
+			fs.mkdirs(new Path(root));
+		}
+
+		if (fs.exists(new Path(root, type)) == false) {
+			fs.mkdirs(new Path(root, type));
+		}
 	}
 
 	private String getStatusPath(String identifier, int id) {
@@ -44,7 +70,13 @@ public class HDFSStatusStorage implements StatusStorage {
 	}
 
 	private String getStatusPath(String identifier) {
-		return JOINER.join(root, identifier);
+		return JOINER.join(root, type, identifier);
+	}
+
+	@Override
+	public HDFSStatusStorage setType(String type) {
+		this.type = type;
+		return this;
 	}
 
 	@Override
@@ -65,7 +97,14 @@ public class HDFSStatusStorage implements StatusStorage {
 
 		Path directoryPath = new Path(getStatusPath(identifier, id));
 
-		FileStatus[] fileStatuses = fs.listStatus(directoryPath);
+		FileStatus[] fileStatuses;
+
+		try {
+			fileStatuses = fs.listStatus(directoryPath);
+		} catch (FileNotFoundException fnfe ) {
+			return new DateTime(0);
+		}
+
 
 		for (FileStatus fileStatus : fileStatuses) {
 			maxTS = Math.max(fileStatus.getModificationTime(), maxTS);
@@ -90,7 +129,11 @@ public class HDFSStatusStorage implements StatusStorage {
 
 		Path statusPath = new Path(getStatusPath(identifier, id), status.getString());
 
-		return new DateTime(fs.getFileStatus(statusPath).getModificationTime());
+		if (fs.exists(statusPath)) {
+			return new DateTime(fs.getFileStatus(statusPath).getModificationTime());
+		}
+
+		return new DateTime(0);
 	}
 
 	@Override
@@ -110,7 +153,13 @@ public class HDFSStatusStorage implements StatusStorage {
 
 		Path directoryPath = new Path(getStatusPath(identifier));
 
-		FileStatus[] fileStatuses = fs.listStatus(directoryPath);
+		FileStatus[] fileStatuses;
+
+		try {
+			fileStatuses = fs.listStatus(directoryPath);
+		} catch (FileNotFoundException fnfe ) {
+			return 0;
+		}
 
 		for (FileStatus fileStatus : fileStatuses) {
 			int iterNo;
@@ -200,7 +249,9 @@ public class HDFSStatusStorage implements StatusStorage {
 
 		Path statusPath = new Path(getStatusPath(identifier, jobId), status.getString());
 
-		fs.delete(statusPath, true);
+		if (fs.exists(statusPath)) {
+			fs.delete(statusPath, true);
+		}
 	}
 
 	@Override
@@ -223,6 +274,11 @@ public class HDFSStatusStorage implements StatusStorage {
 			fs.delete(directoryPath, true);
 		}
 
+		// Create directory if doesn't exist
+		if (fs.exists(directoryPath) == false) {
+			fs.mkdirs(directoryPath);
+		}
+
 		// Commit new status
 		Path path = new Path(directoryPath, status.getString());
 
@@ -230,4 +286,9 @@ public class HDFSStatusStorage implements StatusStorage {
 		fs.setTimes(path, time.toInstant().getMillis(), time.toInstant().getMillis());
 		logger.debug("Created new status file: " + path.toUri());
 	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD, ElementType.PARAMETER})
+	@BindingAnnotation
+	public @interface HDFSStorageRoot {}
 }

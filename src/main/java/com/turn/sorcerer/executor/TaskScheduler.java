@@ -151,6 +151,6 @@ class TaskScheduler implements Runnable {
 	}
 
 	private String prefixLog(String message) {
-		return pipeline + " : " + message;
+		return "pipeline:" + pipeline + " - " + message;
 	}
 }

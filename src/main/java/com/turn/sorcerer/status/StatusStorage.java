@@ -18,6 +18,10 @@ public interface StatusStorage {
 
 	String toString();
 
+	void init() throws IOException;
+
+	StatusStorage setType(String type);
+
 	DateTime getLastUpdateTime(String identifier, int id) throws IOException;
 
 	DateTime getStatusUpdateTime(String identifier, int id, Status status) throws IOException;

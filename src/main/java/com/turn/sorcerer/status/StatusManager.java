@@ -11,6 +11,9 @@ import com.turn.sorcerer.task.type.TaskType;
 
 import java.io.IOException;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 
 /**
@@ -20,14 +23,17 @@ import org.joda.time.DateTime;
  */
 public class StatusManager {
 
+	private static final Logger logger =
+			LogManager.getFormatterLogger(StatusManager.class);
+
 	private static final StatusManager INSTANCE= new StatusManager();
 
 	public static StatusManager get() {
 		return INSTANCE;
 	}
 
-	StatusStorage taskStorage = SorcererInjector.get().getStorageInstance();
-	StatusStorage pipelineStorage = SorcererInjector.get().getStorageInstance();
+	StatusStorage taskStorage = SorcererInjector.get().getStorageInstance().setType("tasks");
+	StatusStorage pipelineStorage = SorcererInjector.get().getStorageInstance().setType("pipelines");
 
 	private StatusManager() {
 
@@ -48,14 +54,14 @@ public class StatusManager {
 			try {
 				taskStorage.clearAllStatuses(taskName, seq);
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(e);
 			}
 		}
 
 		try {
 			taskStorage.commitStatus(taskName, seq, status, time, overwrite);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(ExceptionUtils.getStackTrace(e));
 		}
 	}
 
@@ -67,7 +73,7 @@ public class StatusManager {
 		try {
 			taskStorage.removeStatus(taskName, seq, Status.IN_PROGRESS);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e);
 		}
 	}
 
@@ -75,7 +81,7 @@ public class StatusManager {
 		try {
 			return Status.SUCCESS.equals(taskStorage.checkStatus(type.getName(), seq));
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e);
 			return false;
 		}
 	}
@@ -84,7 +90,7 @@ public class StatusManager {
 		try {
 			return Status.IN_PROGRESS.equals(taskStorage.checkStatus(type.getName(), seq));
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e);
 			return false;
 		}
 	}
@@ -93,7 +99,7 @@ public class StatusManager {
 		try {
 			return Status.ERROR.equals(taskStorage.checkStatus(type.getName(), seq));
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e);
 			return false;
 		}
 	}
@@ -102,7 +108,7 @@ public class StatusManager {
 		try {
 			taskStorage.clearAllStatuses(type.getName(), seq);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e);
 		}
 	}
 
@@ -114,7 +120,7 @@ public class StatusManager {
 		try {
 			return taskStorage.getStatusUpdateTime(taskName, seq, Status.SUCCESS);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e);
 			return null;
 		}
 	}
@@ -123,7 +129,7 @@ public class StatusManager {
 		try {
 			return taskStorage.getStatusUpdateTime(type.getName(), seq, status);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e);
 			return null;
 		}
 	}
@@ -136,9 +142,9 @@ public class StatusManager {
 		try {
 			return pipelineStorage.getCurrentIterNo(pipelineName);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e);
 		}
-		return -1;
+		return 0;
 	}
 
 	public void commitPipelineStatus(PipelineType type, int seq, Status status) {
@@ -153,7 +159,7 @@ public class StatusManager {
 		try {
 			pipelineStorage.commitStatus(taskName, seq, status, time, overwrite);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e);
 		}
 	}
 
@@ -161,7 +167,7 @@ public class StatusManager {
 		try {
 			return Status.SUCCESS.equals(pipelineStorage.checkStatus(type.getName(), seq));
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e);
 			return false;
 		}
 	}
@@ -170,7 +176,7 @@ public class StatusManager {
 		try {
 			pipelineStorage.clearAllStatuses(type.getName(), seq);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e);
 		}
 	}
 }

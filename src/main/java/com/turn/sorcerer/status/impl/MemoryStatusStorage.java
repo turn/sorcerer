@@ -37,6 +37,11 @@ public class MemoryStatusStorage implements StatusStorage {
 	}
 
 	@Override
+	public StatusStorage setType(String type) {
+		return this;
+	}
+
+	@Override
 	public DateTime getLastUpdateTime(String identifier, int id) throws IOException {
 		ConcurrentMap<Status, DateTime> statuses = store.get(identifier, id);
 

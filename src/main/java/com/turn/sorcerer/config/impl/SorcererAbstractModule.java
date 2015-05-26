@@ -9,6 +9,8 @@ import com.turn.sorcerer.module.ModuleType;
 import com.turn.sorcerer.pipeline.Pipeline;
 import com.turn.sorcerer.pipeline.type.PipelineType;
 import com.turn.sorcerer.status.StatusStorage;
+import com.turn.sorcerer.status.impl.HDFSStatusStorage;
+import com.turn.sorcerer.status.type.impl.HDFSStatusStorageType;
 import com.turn.sorcerer.task.Task;
 import com.turn.sorcerer.task.type.TaskType;
 import com.turn.sorcerer.util.email.EmailType;
@@ -88,6 +90,11 @@ public class SorcererAbstractModule extends AbstractModule {
 		bind(EmailType.class).toInstance(module.getAdminEmail());
 
 		bind(StatusStorage.class).to(module.getStorage().getStorageClass());
+
+		if (module.getStorage().getClass() == HDFSStatusStorageType.class) {
+			bind(String.class).annotatedWith(HDFSStatusStorage.HDFSStorageRoot.class)
+					.toInstance(((HDFSStatusStorageType) module.getStorage()).getRoot());
+		}
 	}
 
 

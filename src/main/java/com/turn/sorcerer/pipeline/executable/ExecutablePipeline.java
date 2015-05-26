@@ -142,7 +142,7 @@ public abstract class ExecutablePipeline {
 	}
 
 	public String toString() {
-		return pipelineType.getName() + ":" + iterationNum;
+		return pipelineType.getName() + "-" + iterationNum;
 	}
 
 	public abstract void updatePipelineCompletion();

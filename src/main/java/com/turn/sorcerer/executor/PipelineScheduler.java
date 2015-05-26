@@ -64,6 +64,10 @@ public class PipelineScheduler implements Runnable {
 			     sequenceNumber >= currIter - pipelineType.getLookback() ;
 			     sequenceNumber-- ) {
 
+				if (sequenceNumber < 0) {
+					continue;
+				}
+
 				iterationsToRun.add(sequenceNumber);
 
 				if (pipelineInstances.containsKey(sequenceNumber) == false) {

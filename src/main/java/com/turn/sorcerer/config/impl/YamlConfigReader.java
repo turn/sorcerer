@@ -12,6 +12,7 @@ import com.turn.sorcerer.pipeline.type.PipelineType;
 import com.turn.sorcerer.status.type.impl.HDFSStatusStorageType;
 import com.turn.sorcerer.status.type.impl.MemoryStatusStorageType;
 import com.turn.sorcerer.task.type.TaskType;
+import com.turn.sorcerer.util.email.EmailType;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -46,6 +47,7 @@ public class YamlConfigReader implements ConfigReader {
 	private static final String MODULE_TAG = "module";
 	private static final String HDFS_STATUS_TAG = "hdfs";
 	private static final String MEMORY_STATUS_TAG = "memory";
+	private static final String EMAIL_TAG = "email";
 
 	private static final YamlConfig YAML_CONFIG = new YamlConfig();
 	static {
@@ -54,6 +56,7 @@ public class YamlConfigReader implements ConfigReader {
 		YAML_CONFIG.setClassTag(MODULE_TAG, ModuleType.class);
 		YAML_CONFIG.setClassTag(HDFS_STATUS_TAG, HDFSStatusStorageType.class);
 		YAML_CONFIG.setClassTag(MEMORY_STATUS_TAG, MemoryStatusStorageType.class);
+		YAML_CONFIG.setClassTag(EMAIL_TAG, EmailType.class);
 		YAML_CONFIG.setPrivateFields(true);
 	}
 

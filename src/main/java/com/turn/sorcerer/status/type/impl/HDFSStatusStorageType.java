@@ -18,6 +18,10 @@ public class HDFSStatusStorageType implements StatusStorageType {
 
 	private String root;
 
+	public String getRoot() {
+		return this.root;
+	}
+
 	@Override
 	public Class<? extends StatusStorage> getStorageClass() {
 		return HDFSStatusStorage.class;

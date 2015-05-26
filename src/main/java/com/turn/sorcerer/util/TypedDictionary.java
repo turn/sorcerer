@@ -66,7 +66,7 @@ public class TypedDictionary {
 	}
 
 	public void putAll(Map<String, ? extends Object> props) {
-		map.putAll(props);
+		this.map.putAll(props);
 	}
 
 	public void putAll(TypedDictionary other) {
