@@ -45,6 +45,16 @@ public class TaskType {
 
 	private CRITICALITY criticality = CRITICALITY.HIGH;
 
+	public TaskType() {}
+
+	// For mocking and testing
+	// SHOULD NEVER BE CALLED in production
+	public TaskType(String name, List<String> next, String exec) {
+		this.name = name;
+		this.next = next;
+		this.exec = exec == null ? this.exec : exec;
+	}
+
 	public boolean isEnabled() {
 		return this.enabled;
 	}

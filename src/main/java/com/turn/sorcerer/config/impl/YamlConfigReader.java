@@ -102,7 +102,7 @@ public class YamlConfigReader implements ConfigReader {
 						try {
 							obj = reader.read();
 						} catch (YamlException e) {
-							logger.error("Error while reading yaml configuration files", e);
+							logger.error("Error while reading yaml configuration file " + file.getName(), e);
 							continue;
 						}
 

@@ -21,7 +21,7 @@ public class PipelineType {
 
 	private Integer lookback = 0;
 
-	private Integer threads = 1;
+	private Integer threads = 0;
 
 	public String getName() {
 		return this.name;

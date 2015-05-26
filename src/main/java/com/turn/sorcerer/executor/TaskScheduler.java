@@ -60,8 +60,12 @@ class TaskScheduler implements Runnable {
 		this.jobId = jobId;
 		this.ignoreTaskComplete = overwriteTasks;
 
-		executionPool = MoreExecutors.listeningDecorator(
-				Executors.newFixedThreadPool(numOfThreads));
+		if (numOfThreads > 0) {
+			executionPool = MoreExecutors.listeningDecorator(
+					Executors.newFixedThreadPool(numOfThreads));
+		} else {
+			executionPool = MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
+		}
 		runningTasks = Sets.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
 
 	}
@@ -134,11 +138,11 @@ class TaskScheduler implements Runnable {
 			// Submit task for execution
 			logger.debug(prefixLog("Submitting task %s"), t.getName());
 
-			final ListenableFuture<TaskExecutionResult> taskExecutor =
-					executionPool.submit(new TaskExecutor(t, jobId, taskArgMap.get(t), adhoc));
+			TaskExecutor executor = new TaskExecutor(t, jobId, taskArgMap.get(t), adhoc);
+			ListenableFuture<TaskExecutionResult> future = executionPool.submit(executor);
 			runningTasks.add(t.getName());
-			Futures.addCallback(taskExecutor,
-					new TaskCompletionListener(t, runningTasks, pipeline));
+			TaskCompletionListener callback = new TaskCompletionListener(t, runningTasks, pipeline);
+			Futures.addCallback(future, callback);
 			submittedTasks++;
 		}
 

@@ -62,6 +62,7 @@ public class TaskCompletionListener implements FutureCallback<TaskExecutionResul
 
 	@Override
 	public void onFailure(Throwable throwable) {
+		logger.debug(task.getName() + " failed!");
 		StatusManager.get().commitTaskStatus(task, pipeline.getId(), Status.ERROR);
 		StatusManager.get().removeInProgressTaskStatus(task, pipeline.getId());
 		logger.error(ExceptionUtils.getStackTrace(throwable));

@@ -45,7 +45,8 @@ public class PipelineExecutor implements Runnable {
 		this.interval = pipelineType.getInterval();
 
 		int threads = pipelineType.getThreads();
-		executor= Executors.newScheduledThreadPool(threads);
+
+		executor = Executors.newSingleThreadScheduledExecutor();
 
 		pipeline = PipelineFactory.get().getExecutablePipeline(pipelineType, jobId);
 

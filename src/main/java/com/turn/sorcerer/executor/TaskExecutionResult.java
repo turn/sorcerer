@@ -26,7 +26,6 @@ public class TaskExecutionResult {
 
 	private TaskType taskType;
 	private ExecutionStatus status;
-	private Throwable throwable;
 
 	public void setTask(TaskType taskType) {
 		this.taskType = taskType;
@@ -36,19 +35,11 @@ public class TaskExecutionResult {
 		this.status = status;
 	}
 
-	public void setThrowable(Throwable throwable) {
-		this.throwable = throwable;
-	}
-
 	public TaskType getTaskType() {
 		return taskType;
 	}
 
 	public ExecutionStatus getStatus() {
 		return status;
-	}
-
-	public Throwable getThrowable() {
-		return throwable;
 	}
 }

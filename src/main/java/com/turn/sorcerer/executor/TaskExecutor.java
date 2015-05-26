@@ -49,6 +49,8 @@ public class TaskExecutor implements Callable<TaskExecutionResult> {
 
 	public TaskExecutor(TaskType t, int jobId, Map<String, String> taskArgs, boolean adhoc) {
 		this.taskType = t;
+
+		this.taskArgs = new TypedDictionary();
 		this.taskArgs.putAll(taskArgs);
 		this.jobId = jobId;
 		this.adhoc = adhoc;
@@ -62,7 +64,6 @@ public class TaskExecutor implements Callable<TaskExecutionResult> {
 		TaskExecutionResult status = new TaskExecutionResult();
 		status.setTask(taskType);
 		status.setStatus(TaskExecutionResult.ExecutionStatus.SUCCESS);
-		status.setThrowable(null);
 
 		// Get instance of task
 		ExecutableTask task = TaskFactory.get().getExecutableTask(this.taskType, this.jobId);
