@@ -39,10 +39,10 @@ mvn package
 
 The executable jars (with and without dependencies) will be placed in the `/target` directory.
 
-
 ## Documentation
 
-Coming soon!
+More detailed documentation exists in [docs](docs/).
+
 
 ## Quick Start
 
@@ -82,7 +82,7 @@ For each instance of sorcerer there can only be one module definition. A module 
 			admin: email@example.com
 	
 ```
-For more detailed examples see [Documentation](#Documentation)
+For more detailed examples see [Module](docs/module.md) page
 
 #### Pipeline
 
@@ -106,7 +106,7 @@ A pipeline is a workflow of tasks defined by specifying the initial task in the 
 ---
 ...
 ```
-For more detailed examples see [Documentation](#Documentation)
+For more detailed examples see [Pipeline](docs/pipeline.md) page.
 
 #### Tasks
 
@@ -123,7 +123,7 @@ A task is essentially the smallest unit of action in a sorcerer workflow, basica
 ---
 ...
 ```
-For more detailed examples see [Documentation](#Documentation)
+For more detailed examples see [Tasks](docs/task.md) page.
 
 #### Task classes
 
@@ -155,7 +155,7 @@ public class NewTask implements Task {
 	}
 }
 ```
-For more detailed examples see [Documentation](#Documentation)
+For more detailed examples see [Tasks](docs/task.md) page.
 
 ### Starting Sorcerer
 
@@ -169,12 +169,13 @@ Sorcerer provides a builder to specify the configuraion files path as well as ad
 ```
 Once the sorcerer instance is created, it can be started and stopped by calling:
 
-```
+```java
 sorcerer.start()
 ...
 sorcerer.stop()
 
 ```
+For more details see [Sorcerer Execution](docs/execution.md) page in the documentation.
 
 
 ## Authors and Maintainers
