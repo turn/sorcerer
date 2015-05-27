@@ -2,11 +2,11 @@
 
 Built by [Turn](https://www.turn.com)
 
-**Sorcerer** is a workflow scheduler and manager framework developed at Turn. It is built to be extendable, not tightly coupled to any system (i.e. Hadoop, MySQL, etc.).
+**Sorcerer** is a workflow scheduler and manager framework developed at Turn. It is built to be extensible, not tightly coupled to any system (i.e. Hadoop, MySQL, etc.).
 
 ## Features
 
-- Built to be easily extendable and pluginable
+- Built to be extensible with modular plugins
 - Schedules and manages workflows
 - Simple yaml-based configuration
 - Email alerts to admins
