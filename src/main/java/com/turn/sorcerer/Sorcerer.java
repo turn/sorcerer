@@ -7,7 +7,9 @@ package com.turn.sorcerer;
 
 import com.turn.sorcerer.config.impl.SorcererConfiguration;
 import com.turn.sorcerer.exception.SorcererException;
+import com.turn.sorcerer.executor.PipelineExecutor;
 import com.turn.sorcerer.executor.PipelineScheduler;
+import com.turn.sorcerer.executor.TaskExecutor;
 import com.turn.sorcerer.injector.SorcererInjector;
 import com.turn.sorcerer.pipeline.Pipeline;
 import com.turn.sorcerer.pipeline.type.PipelineType;
@@ -159,6 +161,25 @@ public class Sorcerer {
 		PipelineType type = injector.getPipelineType(pipelineName);
 
 		StatusManager.get().commitPipelineStatus(type, iterNo, status);
+	}
+
+	public void runTask(String taskName, int iterNo, Map<String, String> arguments) {
+		TaskType type = injector.getTaskType(taskName);
+
+		TaskExecutor executor = new TaskExecutor(type, iterNo, arguments, true);
+
+		Executors.newSingleThreadExecutor().submit(executor);
+	}
+
+	public void runPipeline(String pipelineName, int iterNo,
+	                        Map<String, Map<String, String>> argMap, boolean overwrite) {
+		PipelineType type = injector.getPipelineType(pipelineName);
+
+		Map<TaskType, Map<String, String>> taskArgMap = Maps.newHashMap();
+
+		PipelineExecutor executor = new PipelineExecutor(type, iterNo, taskArgMap, true, overwrite);
+
+		Executors.newSingleThreadExecutor().submit(executor);
 	}
 
 	public static SorcererModuleBuilder builder() {
