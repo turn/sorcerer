@@ -41,6 +41,8 @@ There are some provided task types that do not require you to implement. They ar
 
 ## Implementation
 
+The Task implementation has two parts: Annotation and Methods
+
 ### Annotation
 
 Sorcerer task implementation should be annotated with the `@SorcererTask` annotation with the `name` field populated. The name specified in the annotation will be used to map to the corresponding task definition in the configuration files.
@@ -62,7 +64,11 @@ The `Task` class is an interface that requires the user to override and implemen
 
 - #### `getDependencies(int iterNo)`
 
+  This method returns a Collection of `Dependency` instances. These dependencies have to all resolve to true before Sorcerer proceeds with scheduling the task
+
 - #### `exec(Context context)`
+
+  This is the main method of the task. The actual business logic of the task should be put into method. The method also throws Exception so any exceptions thrown in the method will be caught, then wrapped in a SorcererException and logged.
 
 
 ##### Examples
@@ -105,9 +111,9 @@ public class NewTask implements Task {
 
 The `Dependency` class is the object used by Sorcerer to check that a task's dependency is fulfilled. It only has one method to override:
 
-#### `check(int iterNo)`
+- ##### `check(int iterNo)`
 
-This method returns true if the dependencies are fulfilled. The iteration number is provided to be used in the dependency checking.
+  This method returns true if the dependencies are fulfilled. The iteration number is provided to be used in the dependency checking.
 
 ### Provided Dependency implementations
 
@@ -129,16 +135,24 @@ This is an abstract class that provides a `getPaths()` method where it will chec
 
 In order to provide some context information for the task, a `Context` object is provided. The Context object contains fields useful for the task to both get and provide information outside the context of the task.
 
-- ### `getIterationNumber()`
+- #### `getIterationNumber()`
 
   This will return an immutable `int` representing the current iteration number of the task.
 
 
 ## Execution
 
-The task methods are executed in the following order:
+The task methods are executed in the following steps:
 
-***init -> checkDependencies -> exec***
+1. Check if the task is enabled, if not then exit
+2. Check if an instance of the task is already running
+3. Check if the task has been already completed for this iteration number, if already completed then skip
+4. Check if the task is in an error state, if true then exit
+5. Initialize task by calling `init()` method
+6. Check for task dependencies using the Collection of `Dependency` returned by `getDependencies()`. If all dependencies not met then exit.
+7. Execute the task by calling `exec()` method
+
+If any of steps 1-6 fail then the task will not be executed. Debug statements are logged (if the log4j level is set to debug) for each of the steps for debugging.
 
 ---
 
