@@ -3,9 +3,11 @@
 
 ## Configuration
 
-## Impelmentation
+## Implementation
 
 #### getCurrentIterationNumber()
+
+#### Default pipeline
 
 ### Types
 

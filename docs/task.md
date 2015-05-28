@@ -18,12 +18,12 @@ exec |no       |see [Provided task types](#)
 There are some provided task types that do not require you to implement. They are specified by populating the `exec` field in the task definition.
 
 - #### fork
-  This is a placeholder task that will inform Sorcerer to launch all of its `next` tasks in the next scheduled attempt of the pipeline. 
-  
+  This is a placeholder task that will inform Sorcerer to launch all of its `next` tasks in the next scheduled attempt of the pipeline.
+
 
 - #### join
   Since Sorcerer by default will not execute a task until all tasks that specify the current one as `next` are completed, any specified task is technically a "join" task. Nonetheless a workflow definition may sometimes be more readable to have a explicit join task. Therefore we provide a placeholder task that will wait until all previous tasks complete successfully before it is scheduled.
-  
+
 ##### Examples
 ```YAML
 !task
@@ -41,22 +41,28 @@ There are some provided task types that do not require you to implement. They ar
 
 ## Implementation
 
+### Annotation
 
+Sorcerer task implementation should be annotated with the `@SorcererTask` annotation with the `name` field populated. The name specified in the annotation will be used to map to the corresponding task definition in the configuration files.
+
+```
+@SorcererTask(name = "task_name")
+```
 
 ### Methods
 
 The `Task` class is an interface that requires the user to override and implement the following methods:
 
-- #### init(Context context)
-  Some tasks will require some initialization logic before execution. Since we use Guice injections to back instance creation, you could also implement some of your initialization code in a constructor. 
-  
+- #### `init(Context context)`
+  Some tasks will require some initialization logic before execution. Since we use Guice injections to back instance creation, you could also implement some of your initialization code in a constructor.
+
   Similiarly, the `init()` method is provided to implement the task initialization code. It also provides a Context object which contains some parameters (like iteration number) as well as provides a way to pass parameters from the init method to the rest of the task without having to implement class variables.
-  
+
   It is important to note that the `init()` method is called **before** before the call to `getDependencies()`. This can sometimes be useful becuase sometimes the dependency checking step can also require initialization. However the user should be aware of this because if the initialization step itself has dependencies, the user will have to implement those checks.
 
-- #### getDependencies(int iterNo)
+- #### `getDependencies(int iterNo)`
 
-- #### exec(Context context)
+- #### `exec(Context context)`
 
 
 ##### Examples
@@ -99,26 +105,34 @@ public class NewTask implements Task {
 
 The `Dependency` class is the object used by Sorcerer to check that a task's dependency is fulfilled. It only has one method to override:
 
-#### check(int iterNo)
+#### `check(int iterNo)`
 
 This method returns true if the dependencies are fulfilled. The iteration number is provided to be used in the dependency checking.
 
 ### Provided Dependency implementations
 
+There are some Dependency implementations already made available for some common task dependencies.
+
 #### SorcererTaskDependency
+
+This is a task dependency on another Sorcerer task. This can be used if a task is dependent on another task from the same or another pipeline.It provides a variety of ways to specify the task and/or iteration number. See the java docs for more details.
 
 #### TimeDependency
 
+This represents a task dependency based on time. This translates to a task being run only once a day. Sorcerer uses joda-time to represent time.
+
 #### HDFSPathDependency
+
+This is an abstract class that provides a `getPaths()` method where it will check for the existence of a the provided paths.
 
 ## Context
 
 In order to provide some context information for the task, a `Context` object is provided. The Context object contains fields useful for the task to both get and provide information outside the context of the task.
 
-- ### getIterationNumber()
+- ### `getIterationNumber()`
 
   This will return an immutable `int` representing the current iteration number of the task.
-  
+
 
 ## Execution
 
