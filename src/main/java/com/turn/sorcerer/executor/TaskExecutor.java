@@ -70,10 +70,8 @@ public class TaskExecutor implements Callable<TaskExecutionResult> {
 		// Get instance of task
 		ExecutableTask task = TaskFactory.get().getExecutableTask(this.taskType, this.jobId);
 
-		Context context = new Context(jobId, taskArgs);
 
-		// Parameterize the task
-		task.parameterize(context);
+		Context context = new Context(jobId, taskArgs);
 
 		// Normal (non-adhoc) pipeline checks
 		if (!adhoc) {
@@ -81,6 +79,14 @@ public class TaskExecutor implements Callable<TaskExecutionResult> {
 			if (!taskType.isEnabled()) {
 				status.setStatus(ExecutionStatus.DISABLED);
 				LOGGER.debug("%s is disabled. Exiting", task.name());
+				return status;
+			}
+
+			// If another iteration of task is running, return an error
+			if (task.isRunning()) {
+				status.setStatus(ExecutionStatus.RUNNING);
+				LOGGER.debug("%s is already running for job id %s. Exiting",
+						task.name(), jobId);
 				return status;
 			}
 
@@ -99,16 +105,15 @@ public class TaskExecutor implements Callable<TaskExecutionResult> {
 				return status;
 			}
 
+			// Parameterize the task
+
+			LOGGER.debug("Parameterizing %s", task.name());
+			task.parameterize(context);
+
 			// Skip if dependencies are not met
 			if (!task.checkDependencies()) {
 				status.setStatus(ExecutionStatus.DEPENDENCY_FAILURE);
 				LOGGER.debug("%s dependencies are not met. Exiting", task.name());
-				return status;
-			}
-
-			// If another iteration of task is running, return an error
-			if (task.isRunning()) {
-				status.setStatus(ExecutionStatus.RUNNING);
 				return status;
 			}
 		}
