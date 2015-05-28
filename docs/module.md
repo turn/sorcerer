@@ -2,7 +2,7 @@
 
 [Back to Documentation](README.md)
 
-## Configuration
+## <a name="Configuration"></a>Configuration
 
 The Sorcerer module has the following fields:
 
@@ -15,7 +15,7 @@ packages | no | packages to scan for task/pipeline implementations (see [Package
 email |no      |see [Email](#)
 
 
-### Pipelines
+### <a name="Pipelines"></a>Pipelines
 
 This is the list of pipelines names that will be scheduled in this module. The syntax is the standard YAML list specification by prepending each entry with a `-` dash and a space.
 
@@ -29,7 +29,7 @@ pipelines:
 ```
 
 
-### Storage
+### <a name="Storage"></a>Storage
 
 Sorcerer relies heavily on a persistent store to maintain the states of each task and pipeline. The type and configuration of this storage layer is specified in the module.
 
@@ -41,7 +41,7 @@ storage:
 ```
 See the [Persistence Layer](persistence.md) page for more details
 
-### Packages
+### <a name="Packages"></a>Packages
 
 Sorcere will search for `Task` and `Pipeline` implementations with the `@SorcererTask` and `@SorcererPipeline` annotations respectively (See pages [Initialization](initialization.md#Annotations), [Task](task.md#Implementation), and [Pipeline](pipeline.md#Implementation)).
 
@@ -53,7 +53,7 @@ packages:
 	- com.package.tasks
 	- com.package.pipelines
 ```
-### <a name="module-email"></a>Email
+### <a name="Email"></a>Email
 
 The email field is deserialized to an internal `EmailType` object so the `!` operator is required. The email object has the following fields:
 

@@ -57,7 +57,7 @@ A module defines the content and context of a single instance of Sorcerer. Or mo
 
 - Name
 - Pipelines
-- [Email](module.md#module-email)
+- [Email](module.md#Email)
 - Storage
 - Packages
 

@@ -1,15 +1,15 @@
 # Sorcerer Pipeline
 [Back to Documentation](README.md)
 
-## Configuration
+## <a name="Configuration"></a>Configuration
 
-## Implementation
+## <a name="Implementation"></a>Implementation
 
 #### getCurrentIterationNumber()
 
 #### Default pipeline
 
-### Types
+### <a name="Types"></a>Types
 
 ---
 [Back to Documentation](README.md)
