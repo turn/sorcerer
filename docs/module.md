@@ -1,3 +1,9 @@
+<!---
+  Copyright (c) 2015, Turn Inc. All Rights Reserved.
+  Use of this source code is governed by a BSD-style license that can be found
+  in the LICENSE file.
+-->
+
 # Sorcerer Module
 
 [Back to Documentation](README.md)
@@ -7,7 +13,7 @@
 The Sorcerer module has the following fields:
 
 key  |required?|description
------|---------|:-----------
+-|-|:-
 name | yes     | name of module
 pipelines |yes      |pipelines to schedule (see [Pipelines](#))
 storage | yes | persistence layer (see [Storage](#))
@@ -31,7 +37,7 @@ pipelines:
 
 ### <a name="Storage"></a>Storage
 
-Sorcerer relies heavily on a persistent store to maintain the states of each task and pipeline. The type and configuration of this storage layer is specified in the module.
+Sorcerer relies on a persistent store to maintain the states of each task and pipeline. The type and configuration of this storage layer is specified in the module.
 
 ##### Examples
 ```yaml

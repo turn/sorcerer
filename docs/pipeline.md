@@ -1,18 +1,31 @@
+<!---
+  Copyright (c) 2015, Turn Inc. All Rights Reserved.
+  Use of this source code is governed by a BSD-style license that can be found
+  in the LICENSE file.
+-->
+
 # Sorcerer Pipeline
 [Back to Documentation](README.md)
 
+A Sorcerer pipeline represents the workflow or DAG of tasks. However the actual definition of the flow is determined by the individual task themselves by each containing the list of next tasks in the workflow (see [Task Configuration](task.md#Configuration)). Therefore a pipeline is really defined by its initial task. Once the initial task is specified, the rest of the workflow can be determined by following the tasks through their lists of next tasks.
+
 ## <a name="Configuration"></a>Configuration
 
-key|required?|description
--|-|:-
-name|yes|pipeline name unique in the pipeline namespace
-init|yes|first task in the pipeline
-interval|no|interval in seconds between attempted runs
-lookback|no|# of previous pipeline iterations to schedule
-threads|no|number of max threads allowed for the pipeline
-cron|no|cron string
+Pipelines are defined in the configuration files and then Sorcerer deserializes the YAML fields into an internal pipeline object. To mark this, pipeline definitions should be specified with a `!pipeline` tag and delimited with `---`.
+
+The pipeline fields are:
+
+key|required?|description|default value
+-|-|:-|-
+name|yes|pipeline name unique in the pipeline namespace|N/A
+init|yes|first task in the pipeline|N/A
+interval|no|interval in seconds between attempted runs|120
+lookback|no|# of previous pipeline iterations to schedule|0
+threads|no|number of max threads allowed for the pipeline|unlimited
+cron|no|cron string|N/A
 
 ##### Examples
+
 ```
 ---
 !pipeline
@@ -34,7 +47,6 @@ cron|no|cron string
   cron: * 5 * * * *
 
 ---
-...
 ```
 
 ## <a name="Implementation"></a>Implementation
@@ -49,7 +61,7 @@ First, the implementation of `Pipeline` should be annotated with the `@SorcererP
 @SorcererPipeline(name = "pipeline_name")
 ```
 
-## <a name="Method">Methods
+## <a name="Methods">Methods
 
 Along with the annotation, The `Pipeline` interface has the following methods to be implemented:
 

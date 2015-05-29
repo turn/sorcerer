@@ -1,10 +1,16 @@
+<!---
+  Copyright (c) 2015, Turn Inc. All Rights Reserved.
+  Use of this source code is governed by a BSD-style license that can be found
+  in the LICENSE file.
+-->
+
 # Sorcerer Task
 
 [Back to Documentation](README.md)
 
 ## <a name="Configuration"></a>Configuration
 
-Tasks are defined in the configuration files and then Sorcerer deserializes the YAML fields into an internal task object. To mark this, task definitions should be specified with a `!task` tag. The task fields are:
+Tasks are defined in the configuration files and then Sorcerer deserializes the YAML fields into an internal task object. To mark this, task definitions should be specified with a `!task` tag and delimited with `---`. The task fields are:
 
 key  |required?|description
 -----|---------|:-----------
