@@ -2,8 +2,19 @@
 # Use of this source code is governed by a BSD-style license that can be found
 # in the LICENSE file.
 
-# Build results
-/target/
+# Maven
+log/
+target/
 
 # Intellij files
+.idea/
 *.iml
+*.iws
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Mac
+.DS_Store
