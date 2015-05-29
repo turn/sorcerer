@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2015 Turn Inc. All Rights Reserved.
- * Proprietary and confidential.
+ * Copyright (C) 2015, Turn Inc.
+ * All Rights Reserved.
  */
 
 package com.turn.sorcerer.executor;
