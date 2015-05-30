@@ -66,7 +66,11 @@ If it cannot find an implementation of `Pipeline.class` with the proper annotati
 
 ## <a name="Registration"></a>Registration
 
-Finally after all tasks and pipelines are reconciled, Sorcerer will register the module, tasks, and pipelines and create the bindings for each of them to their respective names. Sorcerer uses Google's Guice as the underlying binder and injector for it's task and pipeline registry.
+After all tasks and pipelines are reconciled, Sorcerer will register the module, tasks, and pipelines and create the bindings for each of them to their respective names. Sorcerer uses Google's Guice as the underlying binder and injector for it's task and pipeline registry.
+
+## <a name="Storage"></a>Storage Initialization
+
+Finally after all the pipelines and tasks are registered, it initializes the storage layer and does connection checks as well as any implementation-specific initialization steps (see [Persistence Layer](persistence.md) page).
 
 ---
 [Back to Documentation](README.md)
