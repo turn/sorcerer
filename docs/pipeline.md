@@ -53,7 +53,7 @@ cron|no|cron string|N/A
 
 After a pipeline configuration is defined, the user has the option to implement a trigger to launch the pipeline. For example if a pipeline should only be launched when a path is created in HDFS then an implementation of `Pipeline` should be created (See [getCurrentIterationNumber()](#getCurrentIterationNumber)).
 
-## <a name="Annotation">Annotation
+## <a name="Annotation"></a>Annotation
 
 First, the implementation of `Pipeline` should be annotated with the `@SorcererPipeline` annotation with the `name` field populated. This name string will be mapped to the corresponding pipeline name from the pipeline configuration in the configuration files.
 
@@ -61,7 +61,7 @@ First, the implementation of `Pipeline` should be annotated with the `@SorcererP
 @SorcererPipeline(name = "pipeline_name")
 ```
 
-## <a name="Methods">Methods
+## <a name="Methods"></a>Methods
 
 Along with the annotation, The `Pipeline` interface has the following methods to be implemented:
 
@@ -83,7 +83,7 @@ Along with the annotation, The `Pipeline` interface has the following methods to
 
 Note that if the `cron` field in the pipeline configuration is populated then Sorcerer will automatically bind the pipeline type to an instance of [Cron Pipeline](#Cron_pipeline) and ignores any implementation of `Pipeline` even if the annotation name matches.
 
-#### <a name="Default_pipeline">Default pipeline
+#### <a name="Default_pipeline"></a>Default pipeline
 
 If no `Pipeline` implementation is found, Sorcerer will use a default pipeline for the pipeline type. The default pipeline will generate a new iteration number for every attempted run of the pipeline. Basically it will return the current iteration number of the pipeline type incremented by one.
 
@@ -95,7 +95,7 @@ public Integer getCurrentIterationNumber() {
 }
 ```
 
-#### <a name="Cron_pipeline">Cron pipeline
+#### <a name="Cron_pipeline"></a>Cron pipeline
 
 If the `cron` field in the pipeline configuration is specified, then Sorcerer will automatically bind the pipeline to an instance of `CronPipeline` which will generate current iteration number based on the date and how many iterations of the pipeline in a day.
 
