@@ -10,6 +10,8 @@ import com.turn.sorcerer.exception.SorcererException;
 import com.turn.sorcerer.executor.TaskExecutionResult.ExecutionStatus;
 import com.turn.sorcerer.metrics.MetricUnit;
 import com.turn.sorcerer.metrics.MetricsMonitor;
+import com.turn.sorcerer.status.Status;
+import com.turn.sorcerer.status.StatusManager;
 import com.turn.sorcerer.task.Context;
 import com.turn.sorcerer.task.executable.ExecutableTask;
 import com.turn.sorcerer.task.executable.TaskFactory;
@@ -134,9 +136,14 @@ public class TaskExecutor implements Callable<TaskExecutionResult> {
 		} catch (SorcererException e) {
 			status.setStatus(ExecutionStatus.ERROR);
 			LOGGER.error(task.name() + "failed", e);
+			StatusManager.get().commitTaskStatus(taskType, jobId, Status.ERROR);
 
 			throw e;
+		} finally {
+			StatusManager.get().removeInProgressTaskStatus(taskType, jobId);
 		}
+
+		StatusManager.get().commitTaskStatus(taskType, jobId, Status.SUCCESS, true);
 
 		return status;
 	}

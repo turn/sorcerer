@@ -8,8 +8,6 @@ package com.turn.sorcerer.executor;
 
 import com.turn.sorcerer.executor.TaskExecutionResult.ExecutionStatus;
 import com.turn.sorcerer.pipeline.executable.ExecutablePipeline;
-import com.turn.sorcerer.status.Status;
-import com.turn.sorcerer.status.StatusManager;
 import com.turn.sorcerer.task.type.TaskType;
 import com.turn.sorcerer.util.email.Emailer;
 
@@ -49,11 +47,9 @@ public class TaskCompletionListener implements FutureCallback<TaskExecutionResul
 		logger.debug("Entering task callback method " + pipeline + " task="
 				+ t.getName() + " status=" + executionStatus);
 
-
 		if (ExecutionStatus.SUCCESS.equals(executionStatus)) {
 			// If success, then update pipeline status
 			pipeline.updateTaskAsComplete(t);
-			StatusManager.get().commitTaskStatus(t, pipeline.getId(), Status.SUCCESS, true);
 		}
 
 		// Update running tasks
@@ -64,10 +60,9 @@ public class TaskCompletionListener implements FutureCallback<TaskExecutionResul
 	public void onFailure(Throwable throwable) {
 		logger.debug(pipeline + " - " + task.getName() + " failed!");
 		logger.error(new Exception(throwable));
-		StatusManager.get().commitTaskStatus(task, pipeline.getId(), Status.ERROR);
-		StatusManager.get().removeInProgressTaskStatus(task, pipeline.getId());
 		runningTasks.remove(task.getName());
 
 		new Emailer(task.getName() + " failed", new Exception(throwable)).send();
 	}
+
 }

@@ -6,7 +6,12 @@
 
 package com.turn.sorcerer.executor;
 
+import com.turn.sorcerer.metrics.MetricUnit;
 import com.turn.sorcerer.task.type.TaskType;
+
+import java.util.List;
+
+import com.google.common.collect.Lists;
 
 /**
  * Class Description Here
@@ -27,6 +32,7 @@ public class TaskExecutionResult {
 
 	private TaskType taskType;
 	private ExecutionStatus status;
+	private List<MetricUnit> metrics = Lists.newArrayList();
 
 	public void setTask(TaskType taskType) {
 		this.taskType = taskType;
@@ -42,5 +48,9 @@ public class TaskExecutionResult {
 
 	public ExecutionStatus getStatus() {
 		return status;
+	}
+
+	public void addMetric(MetricUnit metric) {
+		this.metrics.add(metric);
 	}
 }
