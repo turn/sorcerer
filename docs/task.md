@@ -125,25 +125,37 @@ The `Dependency` class is the object used by Sorcerer to check that a task's dep
 
 There are some Dependency implementations already made available for some common task dependencies.
 
-#### SorcererTaskDependency
+- #### SorcererTaskDependency
 
-This is a task dependency on another Sorcerer task. This can be used if a task is dependent on another task from the same or another pipeline.It provides a variety of ways to specify the task and/or iteration number. See the java docs for more details.
+  This is a task dependency on another Sorcerer task. This can be used if a task is dependent on another task from the same or another pipeline.It provides a variety of ways to specify the task and/or iteration number. See the java docs for more details.
 
-#### TimeDependency
+- #### TimeDependency
 
-This represents a task dependency based on time. This translates to a task being run only once a day. Sorcerer uses joda-time to represent time.
+  This represents a task dependency based on time. This translates to a task being run only once a day. Sorcerer uses joda-time to represent time.
 
-#### HDFSPathDependency
+- #### HDFSPathDependency
 
-This is an abstract class that provides a `getPaths()` method where it will check for the existence of a the provided paths.
+  This is an abstract class that provides a `getPaths()` method where it will check for the existence of a the provided paths. See Javadocs for details.
 
 ## <a name="Context"></a>Context
 
 In order to provide some context information for the task, a `Context` object is provided. The Context object contains fields useful for the task to both get and provide information outside the context of the task.
 
-- #### `getIterationNumber()`
+- ##### `getIterationNumber()`
 
   This will return an immutable `int` representing the current iteration number of the task.
+
+- ##### `putProperty()`
+
+  This puts a user parameter into a map that is passed on to the next tasks.
+
+- ##### `getProperty()`
+
+  This returns the property of the given key.
+
+- ##### `putMetric()`
+
+  This puts a metric in the metric map with the provided key and value.
 
 ---
 
