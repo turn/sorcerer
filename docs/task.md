@@ -145,21 +145,6 @@ In order to provide some context information for the task, a `Context` object is
 
   This will return an immutable `int` representing the current iteration number of the task.
 
-
-## <a name="Execution"></a>Execution
-
-The task methods are executed in the following steps:
-
-1. Check if the task is enabled, if not then exit
-2. Check if an instance of the task is already running
-3. Check if the task has been already completed for this iteration number, if already completed then skip
-4. Check if the task is in an error state, if true then exit
-5. Initialize task by calling `init()` method
-6. Check for task dependencies using the Collection of `Dependency` returned by `getDependencies()`. If all dependencies not met then exit.
-7. Execute the task by calling `exec()` method
-
-If any of steps 1-6 fail then the task will not be executed. Debug statements are logged (if the log4j level is set to debug) for each of the steps for debugging.
-
 ---
 
 [Back to Documentation](README.md)
