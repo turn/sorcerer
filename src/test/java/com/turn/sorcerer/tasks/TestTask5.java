@@ -7,15 +7,12 @@
 package com.turn.sorcerer.tasks;
 
 import com.turn.sorcerer.dependency.Dependency;
-import com.turn.sorcerer.dependency.impl.SorcererTaskDependency;
 import com.turn.sorcerer.task.SorcererTask;
 
 import java.util.Collection;
 
-import com.google.common.collect.ImmutableList;
-
 /**
- * Test task for audience workflow scheduler. Specifically a singleton task.
+ * Test task
  *
  * @author tshiou
  */
@@ -27,9 +24,7 @@ public class TestTask5 extends TestTask {
 
 	@Override
 	public Collection<Dependency> getDependencies(int iterNo) {
-		return ImmutableList.<Dependency>builder()
-				.add(new SorcererTaskDependency("test_task_4"))
-				.build();
+		return null;
 	}
 
 	@Override

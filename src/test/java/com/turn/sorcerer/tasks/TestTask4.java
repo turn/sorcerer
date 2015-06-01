@@ -15,7 +15,7 @@ import java.util.Collection;
 import com.google.common.collect.ImmutableList;
 
 /**
- * Test task for audience workflow scheduler. Specifically a singleton task.
+ * Test task. Specifically a singleton task.
  *
  * @author tshiou
  */

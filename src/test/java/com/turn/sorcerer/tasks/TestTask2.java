@@ -9,7 +9,7 @@ package com.turn.sorcerer.tasks;
 import com.turn.sorcerer.task.SorcererTask;
 
 /**
- * Test task for audience workflow scheduler
+ * Test task
  *
  * @author tshiou
  */
