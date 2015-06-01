@@ -65,7 +65,7 @@ public class YamlConfigReader implements ConfigReader {
 	private static final FilenameFilter YAML_FILTER = new FilenameFilter() {
 		@Override
 		public boolean accept(File dir, String name) {
-			return name.contains(".yaml");
+			return name.endsWith(".yaml") || name.endsWith(".yml");
 		}
 	};
 
