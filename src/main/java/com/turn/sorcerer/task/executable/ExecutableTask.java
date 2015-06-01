@@ -69,12 +69,12 @@ public class ExecutableTask {
 			task.exec(context);
 
 		} catch (Exception e) {
-			StatusManager.get()
-					.removeInProgressTaskStatus(this.type, sequenceNumber);
 			if (!adhoc) {
 				StatusManager.get().commitTaskStatus(
 						this.type, sequenceNumber, Status.ERROR, true);
 			}
+			StatusManager.get()
+					.removeInProgressTaskStatus(this.type, sequenceNumber);
 			throw new SorcererException(e);
 		}
 
