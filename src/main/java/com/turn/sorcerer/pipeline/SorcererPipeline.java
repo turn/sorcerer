@@ -12,7 +12,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Class Description Here
+ * Indicates an implementation of a Sorcerer Pipeline to be registered by
+ * Sorcerer.
+ *
+ * <p>
+ * The {@code name} field of the annotation is required. Its value is used by
+ * Sorcerer to map a pipeline configuration to its implementation.
+ * </p>
  *
  * @author tshiou
  */
