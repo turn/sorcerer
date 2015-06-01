@@ -8,7 +8,6 @@ package com.turn.sorcerer.pipeline.executable;
 
 import com.turn.sorcerer.injector.SorcererInjector;
 import com.turn.sorcerer.pipeline.type.PipelineType;
-import com.turn.sorcerer.status.Status;
 import com.turn.sorcerer.status.StatusManager;
 import com.turn.sorcerer.task.type.TaskType;
 
@@ -17,8 +16,6 @@ import java.util.Map;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.SetMultimap;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Class Description Here
@@ -26,8 +23,6 @@ import org.apache.logging.log4j.Logger;
  * @author tshiou
  */
 public abstract class ExecutablePipeline {
-	private final Logger logger =
-			LogManager.getFormatterLogger(ExecutablePipeline.class);
 	protected final int iterationNum;
 	protected final PipelineType pipelineType;
 
@@ -81,7 +76,6 @@ public abstract class ExecutablePipeline {
 		}
 
 		taskCompletionMap.put(task.getName(), false);
-//		taskGraph.put(task, null);
 
 		if (task.getNextTaskNames() == null) {
 			return;
@@ -107,26 +101,6 @@ public abstract class ExecutablePipeline {
 
 	public boolean isCompleted() {
 		return StatusManager.get().isPipelineComplete(this.pipelineType, this.iterationNum);
-	}
-
-	/**
-	 * Commits status
-	 *
-	 * <p>
-	 * Commits status of {@link Status} type.
-	 * If status {@link Status#PENDING}, then any existing status is cleared
-	 * </p>
-	 *
-	 * @param status {@link Status}
-	 */
-	public void commitStatus(Status status) {
-
-		if (Status.PENDING.equals(status)) {
-			StatusManager.get().clearPipelineStatus(this.pipelineType, this.iterationNum);
-		} else {
-			StatusManager.get().commitPipelineStatus(this.pipelineType, this.iterationNum, status);
-		}
-
 	}
 
 	public Map<String, Boolean> getTaskCompletionMap() {

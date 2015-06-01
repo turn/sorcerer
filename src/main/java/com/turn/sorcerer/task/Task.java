@@ -38,6 +38,13 @@ import java.util.Collection;
  *  task execution.
  * </p>
  *
+ * <p>
+ * Classes that implement this interface should be annotated with
+ * {@code SorcererTask(name)} for Sorcerer to register the implementation.
+ * The {@code name} field in the SorcererTask annotation will be used to map
+ * the implementation to the corresponding task configuration of the same name.
+ * </p>
+ *
  * @author  tshiou
  * @see     com.turn.sorcerer.executor.TaskExecutor
  * @see     com.turn.sorcerer.task.executable.ExecutableTask

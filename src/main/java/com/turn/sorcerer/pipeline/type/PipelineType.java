@@ -9,7 +9,8 @@ package com.turn.sorcerer.pipeline.type;
 import com.google.common.base.MoreObjects;
 
 /**
- * Class Description Here
+ * Represents a pipeline definition. Instances are automatically created and
+ * fields are populated by the Sorcerer configuration processor.
  *
  * @author tshiou
  */
@@ -51,6 +52,9 @@ public class PipelineType {
 				.toString();
 	}
 
+	/**
+	 * The name field is used as pipeline's unique identifier so we use it for hashing
+	 */
 	@Override
 	public int hashCode() {
 		return name.hashCode();
@@ -58,7 +62,6 @@ public class PipelineType {
 
 	@Override
 	public boolean equals(Object o) {
-
 		return o instanceof PipelineType && this.getName().equals(((PipelineType) o).getName());
 
 	}
