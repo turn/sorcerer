@@ -36,7 +36,7 @@ public class ExecutableTask {
 		this.sequenceNumber = seq;
 	}
 
-	public void parameterize(Context context) {
+	public void initialize(Context context) {
 
 		this.adhoc = context.getProperties().getBool(Constants.ADHOC);
 

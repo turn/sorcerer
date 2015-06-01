@@ -111,7 +111,7 @@ public class TaskExecutor implements Callable<TaskExecutionResult> {
 			// Parameterize the task
 
 			LOGGER.debug("Parameterizing %s", task.name());
-			task.parameterize(context);
+			task.initialize(context);
 
 			// Skip if dependencies are not met
 			if (!task.checkDependencies()) {
