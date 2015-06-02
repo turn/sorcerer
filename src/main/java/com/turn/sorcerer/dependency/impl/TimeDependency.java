@@ -8,43 +8,30 @@ package com.turn.sorcerer.dependency.impl;
 
 import com.turn.sorcerer.dependency.Dependency;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 
 /**
- * Class Description Here
+ * Time of day task dependency.
+ *
+ * <p>
+ * This implementation of {@link Dependency} should be used if a task should
+ * be scheduled after a certain time of day. This implementation uses the
+ * Joda-Time library.
+ * </p>
  *
  * @author tshiou
  */
 public class TimeDependency implements Dependency {
-	private static final Logger logger =
-			LogManager.getFormatterLogger(TimeDependency.class);
 
-	private DateTime scheduledTime;
+	private final DateTime scheduledTime;
 
-	public TimeDependency(DateTime dateTime) {
-		this.scheduledTime = dateTime;
+	public TimeDependency(DateTime scheduledTime) {
+		this.scheduledTime = scheduledTime;
 	}
 
 	@Override
 	public boolean check(int iterNo) {
-
-		int scheduledHour = scheduledTime.getHourOfDay();
-		int scheduledMinute = scheduledTime.getMinuteOfHour();
-
-		// Compare with current time
-		DateTime calendar = new DateTime();
-		int currentHour = calendar.getHourOfDay();
-		int currentMinute = calendar.getMinuteOfHour();
-
-		if (currentHour > scheduledHour ||
-				(currentHour == scheduledHour && currentMinute >= scheduledMinute)) {
-			logger.info("Time dependency success at %s %s", currentHour, currentMinute);
-			return true;
-		}
-
-		return false;
+		return scheduledTime.isBeforeNow();
 	}
 
 	@Override
