@@ -37,7 +37,7 @@ public abstract class ExecutablePipeline {
 		this.pipelineType = null;
 	}
 
-	public ExecutablePipeline(int id, PipelineType pipelineType) {
+	protected ExecutablePipeline(int id, PipelineType pipelineType) {
 		this.iterationNum = id;
 		this.pipelineType = pipelineType;
 
