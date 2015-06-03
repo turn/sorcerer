@@ -62,7 +62,8 @@ public class PipelineType {
 
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof PipelineType && this.getName().equals(((PipelineType) o).getName());
+		return o instanceof PipelineType
+				&& this.getName().equals(((PipelineType) o).getName());
 
 	}
 }

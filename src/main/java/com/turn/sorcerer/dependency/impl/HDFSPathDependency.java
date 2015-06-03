@@ -18,7 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Class Description Here
+ * Task Dependency implementation based on the existence of a path in HDFS
  *
  * @author tshiou
  */

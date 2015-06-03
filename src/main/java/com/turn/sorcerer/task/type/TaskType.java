@@ -16,12 +16,16 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 
 /**
- * Class Description Here
+ * Represents a task definition. Instances are automatically created and fields
+ * are populated by the Sorcerer configuration processor
  *
  * @author tshiou
  */
 public class TaskType {
 
+	/**
+	 * Supported task execution types
+	 */
 	public static final String FORK_EXEC = "fork";
 	public static final String JOIN_EXEC = "join";
 
@@ -31,7 +35,10 @@ public class TaskType {
 			.put(JOIN_EXEC, JoinTask.class)
 			.build();
 
-	public static enum CRITICALITY {
+	/**
+	 * Task criticality
+	 */
+	public enum CRITICALITY {
 		HIGH,
 		LOW
 	}
@@ -81,6 +88,9 @@ public class TaskType {
 				.toString();
 	}
 
+	/**
+	 * The name field will be unique among the tasks so we use it for hashing
+	 */
 	@Override
 	public int hashCode() {
 		return name.hashCode();
@@ -88,8 +98,8 @@ public class TaskType {
 
 	@Override
 	public boolean equals(Object o) {
-
-		return o instanceof TaskType && this.getName().equals(((TaskType) o).getName());
+		return o instanceof TaskType
+				&& this.getName().equals(((TaskType) o).getName());
 
 	}
 }
