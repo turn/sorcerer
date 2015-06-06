@@ -48,7 +48,7 @@ public class SorcererRegistry {
 	}
 
 	protected void registerTaskClass(String name, Class<? extends Task> clazz) {
-		if (taskClasses.containsKey(name)) {
+		if (taskClasses.containsKey(name) && taskClasses.get(name).equals(clazz)) {
 			logger.error("Task name " + name + " is mapped to multiple classes!\n" +
 							name + " is already mapped to " + taskClasses.get(name) +
 							" but another mapping " + clazz + " found." +
@@ -64,7 +64,7 @@ public class SorcererRegistry {
 	protected void registerTask(TaskType taskType) {
 		String name = taskType.getName();
 
-		if (tasks.containsKey(name)) {
+		if (tasks.containsKey(name) && tasks.get(name).equals(taskType)) {
 			logger.error("Task name " + name + " is mapped to multiple classes!\n" +
 					name + " is already mapped to " + tasks.get(name) +
 					" but another mapping " + taskType + " found." +
@@ -78,7 +78,7 @@ public class SorcererRegistry {
 	}
 
 	protected void registerPipelineClass(String name, Class<? extends Pipeline> clazz) {
-		if (pipelineClasses.containsKey(name)) {
+		if (pipelineClasses.containsKey(name) && pipelineClasses.get(name).equals(clazz)) {
 			logger.error("Pipeline name " + name + " is mapped to multiple classes!\n" +
 							name + " is already mapped to " + pipelineClasses.get(name) +
 							" but another mapping " + clazz + " found." +
@@ -94,7 +94,7 @@ public class SorcererRegistry {
 	protected void registerPipeline(PipelineType pipelineType) {
 		String name = pipelineType.getName();
 
-		if (pipelines.containsKey(name)) {
+		if (pipelines.containsKey(name) && pipelines.get(name).equals(pipelineType)) {
 			logger.error("Task name " + name + " is mapped to multiple classes!\n" +
 							name + " is already mapped to " + pipelines.get(name) +
 							" but another mapping " + pipelineType + " found." +

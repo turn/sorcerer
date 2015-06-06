@@ -27,6 +27,7 @@ import java.util.concurrent.Executors;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -154,10 +155,10 @@ public class Sorcerer {
 	 * @param pipelineName Name of pipeline
 	 * @return Workflow DAG of pipeline represented by a Map
 	 */
-	public Map<String, List<String>> getTasksForPipeline(String pipelineName) {
+	public Map<String, Set<String>> getTasksForPipeline(String pipelineName) {
 		PipelineType pipelineType = injector.getPipelineType(pipelineName);
 
-		Map<String, List<String>> map = Maps.newHashMap();
+		Map<String, Set<String>> map = Maps.newHashMap();
 
 		recursiveBuildGraph(map, pipelineType.getInitTaskName());
 
@@ -167,15 +168,15 @@ public class Sorcerer {
 	/**
 	 * Recursively build the workflow DAG
 	 */
-	private void recursiveBuildGraph(Map<String, List<String>> graph, String taskName) {
+	private void recursiveBuildGraph(Map<String, Set<String>> graph, String taskName) {
 		if (taskName == null) {
 			return;
 		}
 
-		List<String> nextTasks = graph.get(taskName);
+		Set<String> nextTasks = graph.get(taskName);
 
 		if (nextTasks == null) {
-			nextTasks = Lists.newArrayList();
+			nextTasks = Sets.newHashSet();
 			graph.put(taskName, nextTasks);
 		}
 
