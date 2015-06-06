@@ -56,8 +56,7 @@ public class SorcererRegistry {
 			);
 			return;
 		}
-		logger.debug("Registering task " + name);
-		logger.debug(name + " mapped to " + clazz);
+		logger.debug("Registering class " + clazz + " to task " + name);
 		taskClasses.put(name, clazz);
 	}
 
@@ -72,8 +71,7 @@ public class SorcererRegistry {
 			);
 			return;
 		}
-		logger.debug("Registering task " + name);
-		logger.debug(name + " mapped to " + taskType);
+		logger.debug("Registering pipeline type " + taskType);
 		tasks.put(name, taskType);
 	}
 
@@ -86,8 +84,7 @@ public class SorcererRegistry {
 			);
 			return;
 		}
-		logger.debug("Registering pipeline " + name);
-		logger.debug(name + " mapped to " + clazz);
+		logger.debug("Registering class " + clazz + " to pipeline " + name);
 		pipelineClasses.put(name, clazz);
 	}
 
@@ -102,8 +99,7 @@ public class SorcererRegistry {
 			);
 			return;
 		}
-		logger.debug("Registering pipeline " + name);
-		logger.debug(name + " mapped to " + pipelineType);
+		logger.debug("Registering pipeline type " + pipelineType);
 		pipelines.put(name, pipelineType);
 	}
 
