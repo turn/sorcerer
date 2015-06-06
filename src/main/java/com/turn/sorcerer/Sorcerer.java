@@ -42,6 +42,9 @@ public class Sorcerer {
 	private static final Logger logger =
 			LogManager.getFormatterLogger(Sorcerer.class);
 
+	// 30 second retry
+	private static final int STORAGE_RETRY_MILLIS = 30000;
+
 	/**
 	 * Sorcerer injector containing bindings for all Sorcerer member variables
  	 */
@@ -64,12 +67,33 @@ public class Sorcerer {
 	}
 
 	/**
-	 * Starts the Sorcerer service by instantiating pipeline scheduling threads
-	 * and submitting them.
+	 * Starts the Sorcerer service
+	 *
+	 * <p>
+	 * Since Sorcerer relies on the storage layer for pipeline and task states
+	 * it is imperative that the storage layer is initialized before anything
+	 * is scheduled. Therefore Sorcerer will try to initialize the storage
+	 * layer and continue retrying if it fails.
+	 * </p>
+	 *
+	 * <p>
+	 * After the storage layer is initialized, Sorcerer will proceed to
+	 * instantiating pipeline scheduling threads and submitting them.
+	 * </p>
 	 */
 	public void start() {
 		logger.info("Starting Sorcerer");
 
+		// Check if the storage layer is initialized
+		while (StatusManager.get().initialized() == false) {
+			try {
+				Thread.sleep(STORAGE_RETRY_MILLIS);
+			} catch (InterruptedException e) {
+				logger.debug("Storage retry interrupted");
+			}
+		}
+
+		// Schedule and run pipelines
 		scheduleAndRunPipelines();
 	}
 

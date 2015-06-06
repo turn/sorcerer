@@ -40,6 +40,19 @@ public class StatusManager {
 
 	}
 
+	public boolean initialized() {
+		try {
+			taskStorage.init();
+			pipelineStorage.init();
+		} catch (IOException e) {
+			logger.debug("Storage layer could not initialize");
+			logger.debug(e);
+			return false;
+		}
+
+		return true;
+	}
+
 	public void commitTaskStatus(TaskType type, int seq, Status status) {
 		commitTaskStatus(type.getName(), seq, status, DateTime.now(), false);
 	}
