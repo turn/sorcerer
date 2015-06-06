@@ -317,7 +317,7 @@ public class Sorcerer {
 	public static void main(String[] args) throws Exception{
 		Sorcerer module = Sorcerer.builder()
 				.addConfigPath(args[0])
-				.create();
+				.build();
 		module.start();
 	}
 
@@ -358,7 +358,7 @@ public class Sorcerer {
 			return this;
 		}
 
-		public Sorcerer create() throws SorcererException {
+		public Sorcerer build() throws SorcererException {
 			logger.info("Configuring sorcerer module");
 
 			return new Sorcerer(
