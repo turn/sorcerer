@@ -158,39 +158,45 @@ public class Sorcerer {
 	public Map<String, Set<String>> getTasksForPipeline(String pipelineName) {
 		PipelineType pipelineType = injector.getPipelineType(pipelineName);
 
-		Map<String, Set<String>> map = Maps.newHashMap();
+		Map<String, Set<String>> map = Maps.newLinkedHashMap();
 
-		recursiveBuildGraph(map, pipelineType.getInitTaskName());
+		buildGraph(map, pipelineType.getInitTaskName());
 
 		return map;
 	}
 
 	/**
-	 * Recursively build the workflow DAG
+	 * Build the workflow DAG
+	 *
+	 * Breadth first search was chosen since it is creates a more intuitive
+	 * return graph
 	 */
-	private void recursiveBuildGraph(Map<String, Set<String>> graph, String taskName) {
-		if (taskName == null) {
-			return;
-		}
+	private void buildGraph(Map<String, Set<String>> graph, String initTask) {
+		List<String> queue = Lists.newArrayList(initTask);
 
-		Set<String> nextTasks = graph.get(taskName);
+		while (queue.isEmpty() == false) {
+			String taskName = queue.remove(0);
 
-		if (nextTasks == null) {
-			nextTasks = Sets.newHashSet();
-			graph.put(taskName, nextTasks);
-		}
+			if (taskName == null) {
+				return;
+			}
 
-		TaskType type = injector.getTaskType(taskName);
-		List<String> next = type.getNextTaskNames();
+			Set<String> nextTasks = graph.get(taskName);
 
-		if (next == null) {
-			return;
-		}
+			if (nextTasks == null) {
+				nextTasks = Sets.newHashSet();
+				graph.put(taskName, nextTasks);
+			}
 
-		nextTasks.addAll(next);
+			TaskType type = injector.getTaskType(taskName);
+			List<String> next = type.getNextTaskNames();
 
-		for (String t : next) {
-			recursiveBuildGraph(graph, t);
+			if (next == null) {
+				return;
+			}
+
+			nextTasks.addAll(next);
+			queue.addAll(next);
 		}
 	}
 
