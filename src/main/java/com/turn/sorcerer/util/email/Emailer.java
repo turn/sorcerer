@@ -18,8 +18,8 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class Description Here
@@ -28,8 +28,8 @@ import org.apache.logging.log4j.Logger;
  */
 public class Emailer {
 
-	private static final Logger LOGGER =
-			LogManager.getFormatterLogger(Emailer.class);
+	private static final Logger logger =
+			LoggerFactory.getLogger(Emailer.class);
 
 	private String title;
 	private String body;
@@ -47,16 +47,16 @@ public class Emailer {
 
 	public void send() {
 		if (ADMIN_EMAIL.isEnabled() == false) {
-			LOGGER.info("Service email disabled. Not sending email");
+			logger.info("Service email disabled. Not sending email");
 			return;
 		}
 
 		try {
 			sendEmail();
 		} catch (EmailException e) {
-			LOGGER.error("Could not send email", e);
+			logger.error("Could not send email", e);
 		} catch (UnknownHostException e) {
-			LOGGER.error("Could not get local hostname for email");
+			logger.error("Could not get local hostname for email");
 		}
 	}
 
@@ -67,7 +67,7 @@ public class Emailer {
 						.omitEmptyStrings()
 						.trimResults()
 						.split(ADMIN_EMAIL.getAdmins()));
-		LOGGER.info("Sending email to %s", addresses.toString());
+		logger.info("Sending email to {}", addresses.toString());
 
 
 		Email email = new HtmlEmail();

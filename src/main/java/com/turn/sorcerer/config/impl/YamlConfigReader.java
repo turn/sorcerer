@@ -6,8 +6,8 @@
 
 package com.turn.sorcerer.config.impl;
 
-import com.turn.sorcerer.exception.SorcererException;
 import com.turn.sorcerer.config.ConfigReader;
+import com.turn.sorcerer.exception.SorcererException;
 import com.turn.sorcerer.module.ModuleType;
 import com.turn.sorcerer.pipeline.type.PipelineType;
 import com.turn.sorcerer.status.type.impl.HDFSStatusStorageType;
@@ -29,8 +29,8 @@ import com.esotericsoftware.yamlbeans.YamlConfig;
 import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
 import com.google.common.collect.Lists;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class Description Here
@@ -40,7 +40,7 @@ import org.apache.logging.log4j.Logger;
 public class YamlConfigReader implements ConfigReader {
 
 	private static final Logger logger =
-			LogManager.getFormatterLogger(YamlConfigReader.class);
+			LoggerFactory.getLogger(YamlConfigReader.class);
 
 	// YamlReader configuration
 	private static final String TASK_TAG = "task";
@@ -131,7 +131,7 @@ public class YamlConfigReader implements ConfigReader {
 						fReader.close();
 						reader.close();
 					} catch (IOException e) {
-						logger.debug(e);
+						logger.debug("Couldn't close readers", e);
 					}
 
 				}

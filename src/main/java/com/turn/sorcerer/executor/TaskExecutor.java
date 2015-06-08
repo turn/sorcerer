@@ -23,8 +23,8 @@ import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class Description Here
@@ -33,7 +33,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class TaskExecutor implements Callable<TaskExecutionResult> {
 	private static final Logger LOGGER =
-			LogManager.getFormatterLogger(TaskExecutor.class);
+			LoggerFactory.getLogger(TaskExecutor.class);
 
 	private final TaskType taskType;
 	private boolean adhoc = false;
@@ -64,7 +64,7 @@ public class TaskExecutor implements Callable<TaskExecutionResult> {
 	@Override
 	public TaskExecutionResult call() throws Exception {
 
-		LOGGER.debug("Attempting to start task %s", taskType.getName());
+		LOGGER.debug("Attempting to start task {}", taskType.getName());
 
 		TaskExecutionResult status = new TaskExecutionResult();
 		status.setTask(taskType);
@@ -81,14 +81,14 @@ public class TaskExecutor implements Callable<TaskExecutionResult> {
 			// Skip if task is disabled.
 			if (!taskType.isEnabled()) {
 				status.setStatus(ExecutionStatus.DISABLED);
-				LOGGER.debug("%s is disabled. Exiting", task.name());
+				LOGGER.debug("{} is disabled. Exiting", task.name());
 				return status;
 			}
 
 			// If another iteration of task is running, return an error
 			if (task.isRunning()) {
 				status.setStatus(ExecutionStatus.RUNNING);
-				LOGGER.debug("%s is already running for job id %s. Exiting",
+				LOGGER.debug("{} is already running for job id {}. Exiting",
 						task.name(), jobId);
 				return status;
 			}
@@ -96,7 +96,7 @@ public class TaskExecutor implements Callable<TaskExecutionResult> {
 			// Skip if task is already completed
 			if (task.isCompleted()) {
 				status.setStatus(ExecutionStatus.COMPLETED);
-				LOGGER.debug("%s has already run successfully for job id %s. Exiting",
+				LOGGER.debug("{} has already run successfully for job id {}. Exiting",
 						task.name(), jobId);
 				return status;
 			}
@@ -104,26 +104,26 @@ public class TaskExecutor implements Callable<TaskExecutionResult> {
 			// Skip task if previous error has not been cleared
 			if (task.hasError()) {
 				status.setStatus(ExecutionStatus.ERROR);
-				LOGGER.warn("%s has a previous uncleared error. Exiting", task.name());
+				LOGGER.warn("{} has a previous uncleared error. Exiting", task.name());
 				return status;
 			}
 
 			// Parameterize the task
 
-			LOGGER.debug("Parameterizing %s", task.name());
+			LOGGER.debug("Parameterizing {}", task.name());
 			task.initialize(context);
 
 			// Skip if dependencies are not met
 			if (!task.checkDependencies()) {
 				status.setStatus(ExecutionStatus.DEPENDENCY_FAILURE);
-				LOGGER.debug("%s dependencies are not met. Exiting", task.name());
+				LOGGER.debug("{} dependencies are not met. Exiting", task.name());
 				return status;
 			}
 		}
 
 		// Execute task
 		try {
-			LOGGER.info("Executing %s", task.name());
+			LOGGER.info("Executing Task {}", task.name());
 			taskStartTime = System.currentTimeMillis();
 			MetricUnit unit = MetricUnit.getMetricUnit(false, task.name(), TASK_START_TIME_METRIC);
 			MetricsMonitor.getInstance().addGenericMetric(unit, taskStartTime);

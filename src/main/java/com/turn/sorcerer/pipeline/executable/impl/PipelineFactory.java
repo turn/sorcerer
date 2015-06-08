@@ -14,8 +14,8 @@ import com.turn.sorcerer.pipeline.type.PipelineType;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class Description Here
@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class PipelineFactory {
 	private static final Logger logger =
-			LogManager.getFormatterLogger(PipelineFactory.class);
+			LoggerFactory.getLogger(PipelineFactory.class);
 
 	private static PipelineFactory INSTANCE = new PipelineFactory();
 

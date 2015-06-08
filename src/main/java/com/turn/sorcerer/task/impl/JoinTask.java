@@ -14,17 +14,17 @@ import com.turn.sorcerer.task.Task;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Class Description Here
+ * Implements Task to join previous tasks in workflow
  *
  * @author tshiou
  */
 public class JoinTask implements Task {
 	private static final Logger logger =
-			LogManager.getLogger(JoinTask.class);
+			LoggerFactory.getLogger(JoinTask.class);
 
 	private final String name;
 
@@ -39,7 +39,7 @@ public class JoinTask implements Task {
 
 	@Override
 	public void exec(Context context) throws SorcererException {
-		logger.info("Placeholder join task " + name);
+		logger.info("Join task {}", name);
 	}
 
 	@Override

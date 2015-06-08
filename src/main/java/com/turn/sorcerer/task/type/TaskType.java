@@ -12,7 +12,7 @@ import com.turn.sorcerer.task.impl.JoinTask;
 
 import java.util.List;
 
-import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 
 /**
@@ -80,7 +80,7 @@ public class TaskType {
 	}
 
 	public String toString() {
-		return MoreObjects.toStringHelper(this)
+		return Objects.toStringHelper(this)
 				.add("name", this.name)
 				.add("next", this.next)
 				.add("exec", this.exec)

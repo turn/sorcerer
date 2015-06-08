@@ -24,9 +24,9 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class Description Here
@@ -35,7 +35,7 @@ import org.joda.time.DateTime;
  */
 public class HDFSStatusStorage implements StatusStorage {
 	private static final Logger logger =
-			LogManager.getLogger(HDFSStatusStorage.class);
+			LoggerFactory.getLogger(HDFSStatusStorage.class);
 
 	private FileSystem fs;
 
@@ -52,7 +52,7 @@ public class HDFSStatusStorage implements StatusStorage {
 			try {
 				fs = FileSystem.get(new Configuration());
 			} catch (IOException e) {
-				logger.error(e);
+				logger.error("Initialization failed!", e);
 				throw e;
 			}
 		}
@@ -89,7 +89,7 @@ public class HDFSStatusStorage implements StatusStorage {
 			try {
 				fs = FileSystem.get(new Configuration());
 			} catch (IOException e) {
-				logger.error(e);
+				logger.error("Filesystem unreachable!", e);
 				throw e;
 			}
 		}
@@ -123,7 +123,7 @@ public class HDFSStatusStorage implements StatusStorage {
 			try {
 				fs = FileSystem.get(new Configuration());
 			} catch (IOException e) {
-				logger.error(e);
+				logger.error("Filesystem unreachable!", e);
 				throw e;
 			}
 		}
@@ -145,7 +145,7 @@ public class HDFSStatusStorage implements StatusStorage {
 			try {
 				fs = FileSystem.get(new Configuration());
 			} catch (IOException e) {
-				logger.error(e);
+				logger.error("Filesystem unreachable!", e);
 				throw e;
 			}
 		}
@@ -186,7 +186,7 @@ public class HDFSStatusStorage implements StatusStorage {
 			try {
 				fs = FileSystem.get(new Configuration());
 			} catch (IOException e) {
-				logger.error(e);
+				logger.error("Filesystem unreachable!", e);
 				return Status.ERROR;
 			}
 		}
@@ -221,7 +221,7 @@ public class HDFSStatusStorage implements StatusStorage {
 			try {
 				fs = FileSystem.get(new Configuration());
 			} catch (IOException e) {
-				logger.error(e);
+				logger.error("Filesystem unreachable!", e);
 				return;
 			}
 		}
@@ -243,7 +243,7 @@ public class HDFSStatusStorage implements StatusStorage {
 			try {
 				fs = FileSystem.get(new Configuration());
 			} catch (IOException e) {
-				logger.error(e);
+				logger.error("Filesystem unreachable!", e);
 				return;
 			}
 		}
@@ -263,7 +263,7 @@ public class HDFSStatusStorage implements StatusStorage {
 			try {
 				fs = FileSystem.get(new Configuration());
 			} catch (IOException e) {
-				logger.error(e);
+				logger.error("Filesystem unreachable!", e);
 				return;
 			}
 		}

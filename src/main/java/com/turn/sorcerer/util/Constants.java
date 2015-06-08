@@ -6,6 +6,9 @@
 
 package com.turn.sorcerer.util;
 
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
+
 /**
  * Class Description Here
  *
@@ -20,4 +23,6 @@ public class Constants {
 	public static final String ADHOC = "-adhoc";
 
 	public static final String REPORT_ITERATION_NUMBER = "-iteration";
+
+	public static final Marker SORCERER = MarkerFactory.getMarker("sorcerer");
 }

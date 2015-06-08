@@ -23,8 +23,8 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Wrapper around Guice injector
@@ -33,7 +33,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class SorcererInjector {
 	private static final Logger logger =
-			LogManager.getFormatterLogger(SorcererInjector.class);
+			LoggerFactory.getLogger(SorcererInjector.class);
 
 	// We use Guice as the underlying binder
 	private Injector INJECTOR;
@@ -94,7 +94,7 @@ public class SorcererInjector {
 			return INJECTOR.getInstance(
 					Key.get(TaskType.class, Names.named(name)));
 		} catch (ConfigurationException ce) {
-			logger.error(ce);
+			logger.error("Injector could not get instance", ce);
 			return null;
 		}
 	}
@@ -122,7 +122,7 @@ public class SorcererInjector {
 			return INJECTOR.getInstance(
 					Key.get(Task.class, Names.named(type.getName())));
 		} catch (ConfigurationException ce) {
-			logger.error(ce);
+			logger.error("Injector could not get instance", ce);
 			return null;
 		}
 	}
@@ -146,7 +146,7 @@ public class SorcererInjector {
 			return INJECTOR.getInstance(
 					Key.get(PipelineType.class, Names.named(name)));
 		} catch (ConfigurationException ce) {
-			logger.error(ce);
+			logger.error("Injector could not get instance", ce);
 			return null;
 		}
 	}
@@ -175,7 +175,7 @@ public class SorcererInjector {
 			return INJECTOR.getInstance(
 					Key.get(Pipeline.class, Names.named(type.getName())));
 		} catch (ConfigurationException ce) {
-			logger.error(ce);
+			logger.error("Injector could not get instance", ce);
 			return null;
 		}
 	}

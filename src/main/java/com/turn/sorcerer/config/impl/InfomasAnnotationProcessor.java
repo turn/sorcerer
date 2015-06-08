@@ -19,8 +19,8 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import eu.infomas.annotation.AnnotationDetector;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class Description Here
@@ -30,7 +30,7 @@ import org.apache.logging.log4j.Logger;
 public class InfomasAnnotationProcessor implements AnnotationProcessor {
 
 	private static final Logger logger =
-			LogManager.getFormatterLogger(InfomasAnnotationProcessor.class);
+			LoggerFactory.getLogger(InfomasAnnotationProcessor.class);
 
 	public void process(Collection<String> ... pkgs) {
 
@@ -56,7 +56,7 @@ public class InfomasAnnotationProcessor implements AnnotationProcessor {
 			}
 
 		} catch (IOException e) {
-			logger.error(e);
+			logger.error("Could not successfully process Annotations", e);
 		}
 	}
 

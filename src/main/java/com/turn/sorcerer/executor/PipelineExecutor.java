@@ -18,8 +18,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class Description Here
@@ -30,7 +30,7 @@ public class PipelineExecutor implements Runnable {
 
 
 	private static final Logger logger =
-			LogManager.getFormatterLogger(PipelineExecutor.class);
+			LoggerFactory.getLogger(PipelineExecutor.class);
 
 	private final ScheduledExecutorService executor;
 	private final ExecutablePipeline pipeline;
@@ -61,12 +61,11 @@ public class PipelineExecutor implements Runnable {
 	@Override
 	public void run() {
 		if (pipeline.isEnabled() == false) {
-			logger.debug(pipeline.name() + " is disabled. Exiting.");
+			logger.debug(pipeline.name() + "{} is disabled. Exiting.");
 			return;
 		}
 
-		logger.info("Scheduling " + pipeline + " every "
-				+ interval + " seconds");
+		logger.info("Scheduling {} every {} seconds", pipeline, interval);
 
 		pipeline.updatePipelineCompletion();
 
@@ -77,6 +76,7 @@ public class PipelineExecutor implements Runnable {
 				Thread.sleep(1000 * interval);
 			} catch (InterruptedException e) {
 				logger.warn("Sleep interrupted");
+				Thread.currentThread().interrupt();
 			}
 		}
 

@@ -11,8 +11,8 @@ import com.turn.sorcerer.status.StatusManager;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class Description Here
@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class MetricsMonitor {
 	private static final Logger logger =
-			LogManager.getFormatterLogger(MetricsMonitor.class);
+			LoggerFactory.getLogger(MetricsMonitor.class);
 
 	private final Map<MetricUnit, Long> METRICS = Maps.newConcurrentMap();
 
@@ -79,7 +79,7 @@ public class MetricsMonitor {
 
 		// Update metrics with latest success time
 		if (statusSuccessTime > serviceSuccessTime) {
-			logger.debug("%s status file modified time greater than existing last success time. " +
+			logger.debug("{} status file modified time greater than existing last success time. " +
 					"Replacing metric.", taskName);
 			METRICS.put(unit, statusSuccessTime);
 		}

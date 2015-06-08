@@ -12,8 +12,8 @@ import com.turn.sorcerer.task.Task;
 
 import java.util.Collection;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base task class for sorcerer workflow scheduler testing
@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class TestTask implements Task {
 	private static final Logger logger =
-			LogManager.getFormatterLogger(TestTask.class);
+			LoggerFactory.getLogger(TestTask.class);
 
 	@Override
 	public void init(Context context) {}

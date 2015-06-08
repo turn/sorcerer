@@ -6,7 +6,7 @@
 
 package com.turn.sorcerer.pipeline.type;
 
-import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 
 /**
  * Represents a pipeline definition. Instances are automatically created and
@@ -45,8 +45,9 @@ public class PipelineType {
 		return this.threads;
 	}
 
+	@Override
 	public String toString() {
-		return MoreObjects.toStringHelper(this)
+		return Objects.toStringHelper(this)
 				.add("name", this.name)
 				.add("init", this.init)
 				.toString();

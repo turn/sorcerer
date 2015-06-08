@@ -17,8 +17,8 @@ import java.util.Map;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class Description Here
@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
 public class SorcererRegistry {
 
 	private static final Logger logger =
-			LogManager.getFormatterLogger(SorcererRegistry.class);
+			LoggerFactory.getLogger(SorcererRegistry.class);
 
 	private Map<String, TaskType> tasks = Maps.newHashMap();
 	private Map<String, PipelineType> pipelines = Maps.newHashMap();
@@ -56,7 +56,7 @@ public class SorcererRegistry {
 			);
 			return;
 		}
-		logger.debug("Registering class " + clazz + " to task " + name);
+		logger.debug("Registering class {} to task {}", clazz, name);
 		taskClasses.put(name, clazz);
 	}
 
@@ -71,7 +71,7 @@ public class SorcererRegistry {
 			);
 			return;
 		}
-		logger.debug("Registering pipeline type " + taskType);
+		logger.debug("Registering pipeline type {}", taskType);
 		tasks.put(name, taskType);
 	}
 
@@ -84,7 +84,7 @@ public class SorcererRegistry {
 			);
 			return;
 		}
-		logger.debug("Registering class " + clazz + " to pipeline " + name);
+		logger.debug("Registering class {} to pipeline {}", clazz,  name);
 		pipelineClasses.put(name, clazz);
 	}
 
@@ -99,13 +99,13 @@ public class SorcererRegistry {
 			);
 			return;
 		}
-		logger.debug("Registering pipeline type " + pipelineType);
+		logger.debug("Registering pipeline type {}", pipelineType);
 		pipelines.put(name, pipelineType);
 	}
 
 	protected void registerModule(ModuleType moduleType) {
 
-		logger.debug("Registering module " + moduleType);
+		logger.debug("Registering module {}", moduleType);
 
 		modules.add(moduleType);
 

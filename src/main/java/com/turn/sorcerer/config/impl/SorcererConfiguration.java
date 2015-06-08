@@ -6,9 +6,9 @@
 
 package com.turn.sorcerer.config.impl;
 
-import com.turn.sorcerer.exception.SorcererException;
 import com.turn.sorcerer.config.AnnotationProcessor;
 import com.turn.sorcerer.config.ConfigReader;
+import com.turn.sorcerer.exception.SorcererException;
 import com.turn.sorcerer.injector.SorcererInjector;
 import com.turn.sorcerer.pipeline.type.PipelineType;
 import com.turn.sorcerer.task.type.TaskType;
@@ -20,8 +20,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 /**
 * Class Description Here
@@ -31,8 +33,9 @@ import org.apache.logging.log4j.Logger;
 public class SorcererConfiguration {
 
 	private static final Logger logger =
-			LogManager.getFormatterLogger(SorcererConfiguration.class);
-
+			LoggerFactory.getLogger(SorcererConfiguration.class);
+	public static final Marker FATAL = MarkerFactory.getMarker("FATAL");
+	
 	private static final SorcererConfiguration INSTANCE = new SorcererConfiguration();
 
 	private ConfigReader configReader = new YamlConfigReader();
@@ -89,12 +92,12 @@ public class SorcererConfiguration {
 
 		// Should only be one module
 		if (SorcererRegistry.get().getModules().size() != 1) {
-			logger.fatal("Invalid number of modules found! " +
+			logger.error(FATAL, "Invalid number of modules found! " +
 					"Exactly one module should be specified but found " +
 					SorcererRegistry.get().getModules().size());
 
 			if (SorcererRegistry.get().getModules().size() > 0) {
-				logger.fatal("Found modules " + SorcererRegistry.get().getModules());
+				logger.error(FATAL, "Found modules " + SorcererRegistry.get().getModules());
 			}
 
 			success = false;
@@ -110,7 +113,7 @@ public class SorcererConfiguration {
 			}
 
 			if (SorcererRegistry.get().getTaskClasses().containsKey(taskName) == false) {
-				logger.fatal("Could not find a class for task " + taskName);
+				logger.error(FATAL, "Could not find a class for task " + taskName);
 				success = false;
 			}
 		}
@@ -127,7 +130,7 @@ public class SorcererConfiguration {
 
 				// If no definition found for current task (should only apply for initial task)
 				if (SorcererRegistry.get().getTasks().containsKey(task) == false) {
-					logger.fatal("Initial task " + task + " found for pipeline " +
+					logger.error(FATAL, "Initial task " + task + " found for pipeline " +
 							pipeline.getName() + " but no definition found!");
 					success = false;
 					continue;
@@ -143,7 +146,7 @@ public class SorcererConfiguration {
 
 					// If no definition found for child task
 					if (SorcererRegistry.get().getTasks().containsKey(t) == false) {
-						logger.fatal("Task " + t + " found as a child of " + task +
+						logger.error(FATAL, "Task " + t + " found as a child of " + task +
 								" but no definition found!");
 						success = false;
 						continue;

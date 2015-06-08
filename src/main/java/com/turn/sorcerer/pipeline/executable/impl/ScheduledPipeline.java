@@ -15,8 +15,8 @@ import com.turn.sorcerer.status.StatusManager;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class Description Here
@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
 public class ScheduledPipeline extends ExecutablePipeline {
 
 	private static final Logger logger =
-			LogManager.getFormatterLogger(ScheduledPipeline.class);
+			LoggerFactory.getLogger(ScheduledPipeline.class);
 
 	protected ScheduledPipeline(int id, PipelineType t) {
 		super(id, t);

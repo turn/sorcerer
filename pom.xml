@@ -96,7 +96,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>18.0</version>
+            <version>16.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.inject</groupId>
@@ -114,9 +114,9 @@
             <version>2.0.0-cdh4.7.1</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.0-rc1</version>
+	          <groupId>org.slf4j</groupId>
+	          <artifactId>slf4j-api</artifactId>
+	          <version>1.7.12</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>

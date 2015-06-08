@@ -7,9 +7,9 @@
 package com.turn.sorcerer.executor;
 
 import com.turn.sorcerer.pipeline.Pipeline;
-import com.turn.sorcerer.pipeline.type.PipelineType;
 import com.turn.sorcerer.pipeline.executable.ExecutablePipeline;
 import com.turn.sorcerer.pipeline.executable.impl.PipelineFactory;
+import com.turn.sorcerer.pipeline.type.PipelineType;
 
 import java.util.List;
 import java.util.Map;
@@ -20,18 +20,18 @@ import java.util.concurrent.Executors;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Class Description Here
+ * Creates instances of pipelines and schedules them for execution
  *
  * @author tshiou
  */
 public class PipelineScheduler implements Runnable {
 
 	private static final Logger logger =
-			LogManager.getFormatterLogger(PipelineScheduler.class);
+			LoggerFactory.getLogger(PipelineScheduler.class);
 
 	private final PipelineType pipelineType;
 	private final Pipeline iterNoGenerator;
@@ -54,7 +54,7 @@ public class PipelineScheduler implements Runnable {
 	@Override
 	public void run() {
 
-		logger.debug("Launching pipeline " + pipelineType.getName());
+		logger.debug("Launching pipeline {}", pipelineType.getName());
 
 		while (!abort) {
 			int currIter = iterNoGenerator.getCurrentIterationNumber();
@@ -79,7 +79,7 @@ public class PipelineScheduler implements Runnable {
 			// Attempt to run pipeline on
 			Set<Integer> sequenceNumbers = Sets.newHashSet(pipelineInstances.keySet());
 			for (Integer sequenceNumber : sequenceNumbers) {
-				logger.debug("Attempting to run %s for iteration %s",
+				logger.debug("Attempting to run {} for iteration {}",
 						pipelineType.getName(), sequenceNumber);
 
 				ExecutablePipeline pipelineInstance = pipelineInstances.get(sequenceNumber);
@@ -87,7 +87,7 @@ public class PipelineScheduler implements Runnable {
 
 				// If we're not interested in running a date, remove from pipeline instances
 				if (iterationsToRun.contains(sequenceNumber) == false) {
-					logger.info("Removing %s from pipeline queue", pipelineInstance);
+					logger.info("Removing {} from pipeline queue", pipelineInstance);
 					pipelineInstances.remove(sequenceNumber);
 					removeExecutorForPipeline(sequenceNumber);
 					pipelineExecutors.remove(sequenceNumber);
@@ -96,9 +96,10 @@ public class PipelineScheduler implements Runnable {
 
 				// If this is the first time running this instance of pipeline, create it
 				if (pipelineInstance == null) {
-					logger.info("Creating new instance of pipeline %s for %s",
+					logger.debug("Creating new instance of pipeline {} for {}",
 							pipelineType.getName(), sequenceNumber);
-					pipelineInstance = PipelineFactory.get().getExecutablePipeline(pipelineType, sequenceNumber);
+					pipelineInstance = PipelineFactory.get()
+							.getExecutablePipeline(pipelineType, sequenceNumber);
 					pipelineInstances.put(sequenceNumber, pipelineInstance);
 				}
 
@@ -107,16 +108,17 @@ public class PipelineScheduler implements Runnable {
 
 				// If instance of pipeline is completed, don't schedule
 				if (pipelineInstance.isCompleted()) {
-					logger.debug("Pipeline %s is completed", pipelineInstance);
+					logger.debug("Pipeline {} is completed", pipelineInstance);
 					continue;
 				}
 
 				// If pipeline hasn't been scheduled, schedule pipeline
 				if (executor == null) {
-					logger.debug("Scheduling pipeline " + pipelineType);
+					logger.debug("Scheduling pipeline {}", pipelineType);
 					executor = Executors.newSingleThreadExecutor();
 
-					PipelineExecutor pipelineExecutor = new PipelineExecutor(pipelineType, sequenceNumber);
+					PipelineExecutor pipelineExecutor =
+							new PipelineExecutor(pipelineType, sequenceNumber);
 					pipelineExecutors.put(sequenceNumber, pipelineExecutor);
 					executor.submit(pipelineExecutor);
 					pipelineSchedulers.put(sequenceNumber, executor);
@@ -127,6 +129,7 @@ public class PipelineScheduler implements Runnable {
 				Thread.sleep(1000 * pipelineType.getInterval());
 			} catch (InterruptedException e) {
 				logger.warn("Thread sleep was interrupted", e);
+				Thread.currentThread().interrupt();
 			}
 		}
 

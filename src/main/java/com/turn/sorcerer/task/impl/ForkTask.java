@@ -15,17 +15,17 @@ import com.turn.sorcerer.task.type.TaskType;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Class Description Here
+ * Implements Task to fork next tasks in workflow
  *
  * @author tshiou
  */
 public class ForkTask implements Task {
 	private static final Logger logger =
-			LogManager.getLogger(ForkTask.class);
+			LoggerFactory.getLogger(ForkTask.class);
 
 	private final TaskType type;
 
@@ -40,7 +40,8 @@ public class ForkTask implements Task {
 
 	@Override
 	public void exec(Context context) throws SorcererException {
-		logger.info("Task " + type.getName() + " forking tasks " + type.getNextTaskNames());
+		logger.info("Fork task {}:{} forking tasks {}",
+				type.getName(), context.getIterationNumber(), type.getNextTaskNames());
 	}
 
 	@Override

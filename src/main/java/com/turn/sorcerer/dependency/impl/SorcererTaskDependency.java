@@ -14,8 +14,8 @@ import com.turn.sorcerer.task.SorcererTask;
 import com.turn.sorcerer.task.Task;
 import com.turn.sorcerer.task.type.TaskType;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Task dependency on another task
@@ -31,7 +31,7 @@ import org.apache.logging.log4j.Logger;
 public class SorcererTaskDependency implements Dependency {
 
 	private static final Logger logger =
-			LogManager.getFormatterLogger(SorcererTaskDependency.class);
+			LoggerFactory.getLogger(SorcererTaskDependency.class);
 
 	// Requisite task type
 	private final TaskType task;

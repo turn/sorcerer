@@ -16,8 +16,8 @@ import java.util.concurrent.ConcurrentMap;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.joda.time.DateTime;
 
 /**
@@ -28,7 +28,7 @@ import org.joda.time.DateTime;
 public class MemoryStatusStorage implements StatusStorage {
 
 	private static final Logger logger =
-			LogManager.getFormatterLogger(MemoryStatusStorage.class);
+			LoggerFactory.getLogger(MemoryStatusStorage.class);
 
 	private final Table<String, Integer, ConcurrentMap<Status, DateTime>> store;
 

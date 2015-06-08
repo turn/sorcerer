@@ -14,8 +14,8 @@ import com.turn.sorcerer.util.email.Emailer;
 import java.util.Set;
 
 import com.google.common.util.concurrent.FutureCallback;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class TaskCompletionListener implements FutureCallback<TaskExecutionResult> {
 	private static final Logger logger =
-			LogManager.getLogger(TaskCompletionListener.class);
+			LoggerFactory.getLogger(TaskCompletionListener.class);
 
 	private final TaskType task;
 	private Set<String> runningTasks;
@@ -44,8 +44,8 @@ public class TaskCompletionListener implements FutureCallback<TaskExecutionResul
 	public void onSuccess(TaskExecutionResult executionResult) {
 		TaskType t = executionResult.getTaskType();
 		ExecutionStatus executionStatus = executionResult.getStatus();
-		logger.debug("Entering task callback method " + pipeline + " task="
-				+ t.getName() + " status=" + executionStatus);
+		logger.debug("Entering task callback method {} task={} status={}",
+				pipeline, task.getName(), executionStatus);
 
 		if (ExecutionStatus.SUCCESS.equals(executionStatus)) {
 			// If success, then update pipeline status
@@ -58,8 +58,8 @@ public class TaskCompletionListener implements FutureCallback<TaskExecutionResul
 
 	@Override
 	public void onFailure(Throwable throwable) {
-		logger.debug(pipeline + " - " + task.getName() + " failed!");
-		logger.error(new Exception(throwable));
+		logger.error("{} - {} failed!", pipeline, task.getName());
+		logger.trace("Task error", throwable);
 		runningTasks.remove(task.getName());
 
 		new Emailer(task.getName() + " failed", new Exception(throwable)).send();

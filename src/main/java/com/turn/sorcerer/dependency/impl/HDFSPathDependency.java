@@ -14,8 +14,8 @@ import java.util.Collection;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Task Dependency implementation based on the existence of a path in HDFS
@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class HDFSPathDependency implements Dependency {
 	private static final Logger logger =
-			LogManager.getFormatterLogger(HDFSPathDependency.class);
+			LoggerFactory.getLogger(HDFSPathDependency.class);
 
 	private FileSystem fs = null;
 
@@ -42,14 +42,14 @@ public abstract class HDFSPathDependency implements Dependency {
 			try {
 				fs = FileSystem.get(new Configuration());
 			} catch (IOException e) {
-				logger.error(e);
+				logger.error("Filesystem unreachable!", e);
 				return false;
 			}
 		}
 
 
 		for (String p: paths) {
-			logger.debug("Checking path %s", p);
+			logger.debug("Checking path {}", p);
 
 			if (p == null) {
 				return false;
@@ -59,11 +59,11 @@ public abstract class HDFSPathDependency implements Dependency {
 
 			try {
 				if (!fs.exists(path)) {
-					logger.debug("Dependency Check Failed - Path does not exist: " + path.toUri());
+					logger.debug("Dependency Check Failed - Path does not exist: {}", path.toUri());
 					return false;
 				}
 			} catch (IOException e) {
-				logger.error("Could not check existence of path %s", path);
+				logger.error("Could not check existence of path {}", path);
 				return false;
 			}
 		}

@@ -13,8 +13,8 @@ import com.turn.sorcerer.task.type.TaskType;
 import java.io.IOException;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.joda.time.DateTime;
 
 /**
@@ -25,7 +25,7 @@ import org.joda.time.DateTime;
 public class StatusManager {
 
 	private static final Logger logger =
-			LogManager.getFormatterLogger(StatusManager.class);
+			LoggerFactory.getLogger(StatusManager.class);
 
 	private static final StatusManager INSTANCE= new StatusManager();
 
@@ -45,8 +45,7 @@ public class StatusManager {
 			taskStorage.init();
 			pipelineStorage.init();
 		} catch (IOException e) {
-			logger.debug("Storage layer could not initialize");
-			logger.debug(e);
+			logger.debug("Storage layer could not initialize", e);
 			return false;
 		}
 
@@ -68,7 +67,7 @@ public class StatusManager {
 			try {
 				taskStorage.clearAllStatuses(taskName, seq);
 			} catch (IOException e) {
-				logger.error(e);
+				logger.error("Storage layer unreachable!", e);
 			}
 		}
 
@@ -83,7 +82,7 @@ public class StatusManager {
 		try {
 			return taskStorage.checkStatus(taskName, seq);
 		} catch (IOException e) {
-			logger.error(e);
+			logger.error("Storage layer unreachable!", e);
 		}
 		return Status.PENDING;
 	}
@@ -92,7 +91,7 @@ public class StatusManager {
 		try {
 			return pipelineStorage.checkStatus(pipelineName, seq);
 		} catch (IOException e) {
-			logger.error(e);
+			logger.error("Storage layer unreachable!", e);
 		}
 		return Status.PENDING;
 	}
@@ -105,7 +104,7 @@ public class StatusManager {
 		try {
 			taskStorage.removeStatus(taskName, seq, Status.IN_PROGRESS);
 		} catch (IOException e) {
-			logger.error(e);
+			logger.error("Storage layer unreachable!", e);
 		}
 	}
 
@@ -113,7 +112,7 @@ public class StatusManager {
 		try {
 			return Status.SUCCESS.equals(taskStorage.checkStatus(type.getName(), seq));
 		} catch (IOException e) {
-			logger.error(e);
+			logger.error("Storage layer unreachable!", e);
 			return false;
 		}
 	}
@@ -122,7 +121,7 @@ public class StatusManager {
 		try {
 			return Status.IN_PROGRESS.equals(taskStorage.checkStatus(type.getName(), seq));
 		} catch (IOException e) {
-			logger.error(e);
+			logger.error("Storage layer unreachable!", e);
 			return false;
 		}
 	}
@@ -131,7 +130,7 @@ public class StatusManager {
 		try {
 			return Status.ERROR.equals(taskStorage.checkStatus(type.getName(), seq));
 		} catch (IOException e) {
-			logger.error(e);
+			logger.error("Storage layer unreachable!", e);
 			return false;
 		}
 	}
@@ -140,7 +139,7 @@ public class StatusManager {
 		try {
 			taskStorage.clearAllStatuses(type.getName(), seq);
 		} catch (IOException e) {
-			logger.error(e);
+			logger.error("Storage layer unreachable!", e);
 		}
 	}
 
@@ -152,7 +151,7 @@ public class StatusManager {
 		try {
 			return taskStorage.getStatusUpdateTime(taskName, seq, Status.SUCCESS);
 		} catch (IOException e) {
-			logger.error(e);
+			logger.error("Storage layer unreachable!", e);
 			return null;
 		}
 	}
@@ -161,7 +160,7 @@ public class StatusManager {
 		try {
 			return taskStorage.getStatusUpdateTime(type.getName(), seq, status);
 		} catch (IOException e) {
-			logger.error(e);
+			logger.error("Storage layer unreachable!", e);
 			return null;
 		}
 	}
@@ -174,7 +173,7 @@ public class StatusManager {
 		try {
 			return pipelineStorage.getCurrentIterNo(pipelineName);
 		} catch (IOException e) {
-			logger.error(e);
+			logger.error("Storage layer unreachable!", e);
 		}
 		return 0;
 	}
@@ -191,7 +190,7 @@ public class StatusManager {
 		try {
 			pipelineStorage.commitStatus(taskName, seq, status, time, overwrite);
 		} catch (IOException e) {
-			logger.error(e);
+			logger.error("Storage layer unreachable!", e);
 		}
 	}
 
@@ -199,7 +198,7 @@ public class StatusManager {
 		try {
 			return Status.SUCCESS.equals(pipelineStorage.checkStatus(type.getName(), seq));
 		} catch (IOException e) {
-			logger.error(e);
+			logger.error("Storage layer unreachable!", e);
 			return false;
 		}
 	}
@@ -208,7 +207,7 @@ public class StatusManager {
 		try {
 			pipelineStorage.clearAllStatuses(type.getName(), seq);
 		} catch (IOException e) {
-			logger.error(e);
+			logger.error("Storage layer unreachable!", e);
 		}
 	}
 }

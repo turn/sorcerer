@@ -28,8 +28,9 @@ import java.util.concurrent.Executors;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.BasicConfigurator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Represents a Sorcerer instance and provides the public API's to the
@@ -40,7 +41,7 @@ import org.apache.logging.log4j.Logger;
 public class Sorcerer {
 
 	private static final Logger logger =
-			LogManager.getFormatterLogger(Sorcerer.class);
+			LoggerFactory.getLogger(Sorcerer.class);
 
 	// 30 second retry
 	private static final int STORAGE_RETRY_MILLIS = 30000;
@@ -111,7 +112,7 @@ public class Sorcerer {
 				return;
 			}
 
-			logger.info("Starting pipeline " + pipeline);
+			logger.info("Starting pipeline {}", pipeline.toString());
 
 			PipelineScheduler pipelineScheduler = new PipelineScheduler(pipeline);
 
@@ -315,6 +316,7 @@ public class Sorcerer {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception{
+		BasicConfigurator.configure();
 		Sorcerer module = Sorcerer.builder()
 				.addConfigPath(args[0])
 				.build();
