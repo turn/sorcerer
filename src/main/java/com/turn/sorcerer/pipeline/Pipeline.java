@@ -54,4 +54,6 @@ public interface Pipeline {
 	 * @return Current iteration number
 	 */
 	Integer getCurrentIterationNumber();
+
+	Integer getPreviousIterationNumber(int curr, int prev);
 }

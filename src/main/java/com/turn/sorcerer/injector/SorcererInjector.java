@@ -193,7 +193,12 @@ public class SorcererInjector {
 	 * Provides the set of pipeline types to be scheduled in the module
 	 */
 	public Set<PipelineType> getPipelines() {
-		return INJECTOR.getInstance(Key.get(setOfPipelines));
+		try {
+			return INJECTOR.getInstance(Key.get(setOfPipelines));
+		} catch (ConfigurationException ce) {
+			logger.error("Injector could not get instance", ce);
+			return null;
+		}
 	}
 
 	/**

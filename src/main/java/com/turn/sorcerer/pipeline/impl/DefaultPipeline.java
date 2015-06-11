@@ -27,4 +27,9 @@ public class DefaultPipeline implements Pipeline {
 	public Integer getCurrentIterationNumber() {
 		return StatusManager.get().getCurrentIterationNumberForPipeline(type) + 1;
 	}
+
+	@Override
+	public Integer getPreviousIterationNumber(int curr, int prev) {
+		return curr - prev;
+	}
 }

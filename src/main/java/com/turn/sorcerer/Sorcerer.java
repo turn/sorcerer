@@ -105,6 +105,11 @@ public class Sorcerer {
 	 */
 	private void scheduleAndRunPipelines() {
 
+		if (injector.getPipelines() == null) {
+			logger.info("No pipelines found.");
+			return;
+		}
+
 		for (PipelineType pipeline: injector.getPipelines()) {
 
 			if (pipeline == null) {
