@@ -10,11 +10,38 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>sorcerer</groupId>
+    <groupId>com.turn.sorcerer</groupId>
     <artifactId>sorcerer</artifactId>
     <version>0.1</version>
     <packaging>jar</packaging>
-    <name>sorcerer</name>
+
+    <name>Sorcerer</name>
+    <description>Sorcerer is a lightweight workflow manager</description>
+    <url>https://github.com/turn/sorcerer</url>
+
+    <licenses>
+        <license>
+            <name>The BSD License, 3-Clause</name>
+            <url>http://opensource.org/licenses/BSD-3-Clause</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Tommy Shiou</name>
+            <email>tommy.shiou@turn.com</email>
+            <timezone>-8</timezone>
+            <organization>Turn Inc</organization>
+            <organizationUrl>http://www.turn.com/</organizationUrl>
+        </developer>
+     </developers>
+
+     <scm>
+        <connection>scm:git:git@github.com:turn/sorcerer.git</connection>
+        <developerConnection>scm:git:git@github.com:turn/sorcerer.git</developerConnection>
+        <url>git@github.com:turn/sorcerer.git</url>
+     </scm>
 
     <build>
         <plugins>
@@ -47,17 +74,14 @@
             <plugin>
               <artifactId>maven-assembly-plugin</artifactId>
               <configuration>
-
                 <descriptorRefs>
                   <descriptorRef>jar-with-dependencies</descriptorRef>
                 </descriptorRefs>
-
                 <archive>
                     <manifest>
                         <mainClass>com.turn.sorcerer.Sorcerer</mainClass>
                     </manifest>
                 </archive>
-
               </configuration>
               <executions>
                   <execution>
@@ -82,8 +106,66 @@
                 </executions>
             </plugin>
 
+            <!-- deploy to the OSS Nexus server -->
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.3</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+
+            <!-- javadoc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <configuration>
+                    <links>
+                        <link>http://docs.oracle.com/javase/6/docs/api</link>
+                        <link>https://developers.google.com/protocol-buffers/docs/reference/java
+                        </link>
+                        <link>
+                            http://docs.guava-libraries.googlecode.com/git-history/release/javadoc
+                        </link>
+                        <link>http://netty.io/4.0/api/</link>
+                        <link>http://google-gson.googlecode.com/svn/trunk/gson/docs/javadocs/</link>
+                    </links>
+                    <stylesheet>java</stylesheet>
+                    <bootclasspath>${sun.boot.class.path}</bootclasspath>
+                    <additionalJOption>-J-Xmx1024m</additionalJOption>
+                    <detectJavaApiLink>true</detectJavaApiLink>
+                    <detectLinks>true</detectLinks>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>ossrh</id>
+            <name>Nexus Release repository</name>
+            <url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>http://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <dependencies>
         <dependency>
@@ -143,5 +225,35 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>release-sign-artifacts</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
