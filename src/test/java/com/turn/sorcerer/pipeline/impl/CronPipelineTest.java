@@ -61,7 +61,7 @@ public class CronPipelineTest {
 		Assert.assertEquals(testPipeline.getCurrentIterationNumber().intValue(), 1501150015);
 	}
 
-	@Test
+	@Test(dependsOnMethods = "testCurrentIterationNumberFirstSuccess")
 	public void testCurrentIterationNumberDayBoundary() {
 		DateTime now = new DateTime()
 				.withYear(2015)
