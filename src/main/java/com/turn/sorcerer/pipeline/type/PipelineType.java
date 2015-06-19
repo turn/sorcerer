@@ -19,7 +19,7 @@ public class PipelineType {
 
 	private String init;
 
-	private Integer interval;
+	private Integer interval = 60;
 
 	private Integer lookback = 0;
 
