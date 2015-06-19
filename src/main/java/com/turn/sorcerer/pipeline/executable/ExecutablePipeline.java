@@ -56,10 +56,6 @@ public abstract class ExecutablePipeline {
 		updatePipelineCompletion();
 	}
 
-	public boolean isEnabled() {
-		return true;
-	}
-
 	public String name() {
 		return pipelineType.getName();
 	}

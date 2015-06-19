@@ -60,10 +60,6 @@ public class PipelineExecutor implements Runnable {
 
 	@Override
 	public void run() {
-		if (pipeline.isEnabled() == false) {
-			logger.debug(pipeline.name() + "{} is disabled. Exiting.");
-			return;
-		}
 
 		logger.info("Scheduling {} every {} seconds", pipeline, interval);
 
