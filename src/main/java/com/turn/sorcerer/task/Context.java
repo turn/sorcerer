@@ -13,21 +13,27 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 
 /**
- * Class Description Here
+ * Provides task context including iteration number and properties
  *
  * @author tshiou
  */
 public class Context {
 
-	private final int iterationNumber;
+	private int iterationNumber;
 	private final TypedDictionary properties;
 	private final Map<String, Long> metrics = Maps.newHashMap();
+
+	public Context(int iterationNumber) {
+		this.iterationNumber = iterationNumber;
+		this.properties = new TypedDictionary();
+	}
 
 	public Context(int iterationNumber, TypedDictionary parameters) {
 		properties = new TypedDictionary();
 		this.iterationNumber = iterationNumber;
 		properties.putAll(parameters);
 	}
+
 
 	public int getIterationNumber() {
 		return this.iterationNumber;
