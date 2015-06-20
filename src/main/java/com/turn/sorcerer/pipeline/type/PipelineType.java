@@ -25,6 +25,8 @@ public class PipelineType {
 
 	private Integer threads = 0;
 
+	private String cron;
+
 	public String getName() {
 		return this.name;
 	}
@@ -43,6 +45,10 @@ public class PipelineType {
 
 	public Integer getThreads() {
 		return this.threads;
+	}
+
+	public String getCronString() {
+		return this.cron;
 	}
 
 	@Override

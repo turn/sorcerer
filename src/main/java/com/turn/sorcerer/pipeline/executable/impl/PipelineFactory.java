@@ -9,6 +9,7 @@ package com.turn.sorcerer.pipeline.executable.impl;
 import com.turn.sorcerer.injector.SorcererInjector;
 import com.turn.sorcerer.pipeline.Pipeline;
 import com.turn.sorcerer.pipeline.executable.ExecutablePipeline;
+import com.turn.sorcerer.pipeline.impl.CronPipeline;
 import com.turn.sorcerer.pipeline.impl.DefaultPipeline;
 import com.turn.sorcerer.pipeline.type.PipelineType;
 
@@ -39,6 +40,10 @@ public class PipelineFactory {
 	}
 
 	public Pipeline getPipeline(PipelineType type) {
+
+		if (type.getCronString() != null || type.getCronString().length() > 0) {
+			return new CronPipeline(type.getCronString());
+		}
 
 		if (SorcererInjector.get().bindingExists(type)) {
 			return SorcererInjector.get().getInstance(type);
