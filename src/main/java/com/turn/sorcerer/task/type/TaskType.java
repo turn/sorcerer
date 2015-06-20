@@ -64,6 +64,10 @@ public class TaskType {
 		return this.next;
 	}
 
+	public CRITICALITY getCriticality() {
+		return this.criticality;
+	}
+
 	public int getSLA() {
 		if (_sla_seconds == null) {
 			try {

@@ -79,7 +79,6 @@ class TaskScheduler implements Runnable {
 
 		int submittedTasks = 0;
 
-		graphloop:
 		for(Map.Entry<String, Collection<TaskType>> entry :
 				pipeline.getTaskGraph().asMap().entrySet()) {
 
@@ -93,6 +92,8 @@ class TaskScheduler implements Runnable {
 			if (StatusManager.get().isTaskComplete(t, jobId)) {
 				continue;
 			}
+
+			boolean dependencySuccess = true;
 
 			// If no task dependencies, run task
 			for (TaskType taskDependency : entry.getValue()) {
@@ -108,19 +109,30 @@ class TaskScheduler implements Runnable {
 								pipeline,
 								t.getName(),
 								taskDependency.getName());
-						continue graphloop;
+						dependencySuccess = false;
 					}
 				} else {
-					if (StatusManager.get().isTaskComplete(taskDependency, jobId) == false) {
+					if (StatusManager.get().isTaskInError(taskDependency, jobId) == true) {
+
+						// If the task is in error, we can ignore it if criticality is low
+						if (taskDependency.getCriticality() == TaskType.CRITICALITY.HIGH) {
+							dependencySuccess = false;
+						}
+					} else if (StatusManager.get().isTaskComplete(taskDependency, jobId) == false) {
 						logger.debug("pipeline: {} - dependency for " +
 										"{}, {}:{} not complete",
 								pipeline,
 								t.getName(),
 								jobId,
 								taskDependency.getName());
-						continue graphloop;
+
+						dependencySuccess = false;
 					}
 				}
+			}
+
+			if (dependencySuccess == false) {
+				continue;
 			}
 
 			// If adhoc pipeline, then rely on task completion map
