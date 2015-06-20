@@ -6,6 +6,7 @@
 
 package com.turn.sorcerer.task.type;
 
+import com.turn.sorcerer.exception.SorcererException;
 import com.turn.sorcerer.task.Task;
 import com.turn.sorcerer.task.impl.ForkTask;
 import com.turn.sorcerer.task.impl.JoinTask;
@@ -23,26 +24,6 @@ import com.google.common.collect.ImmutableMap;
  */
 public class TaskType {
 
-	/**
-	 * Supported task execution types
-	 */
-	public static final String FORK_EXEC = "fork";
-	public static final String JOIN_EXEC = "join";
-
-	public static final ImmutableMap<String, Class<? extends Task>> SUPPORTED_EXEC =
-			ImmutableMap.<String, Class<? extends Task>>builder()
-			.put(FORK_EXEC, ForkTask.class)
-			.put(JOIN_EXEC, JoinTask.class)
-			.build();
-
-	/**
-	 * Task criticality
-	 */
-	public enum CRITICALITY {
-		HIGH,
-		LOW
-	}
-
 	private boolean enabled = true;
 
 	private String name;
@@ -52,6 +33,10 @@ public class TaskType {
 	private String exec = "class";
 
 	private CRITICALITY criticality = CRITICALITY.HIGH;
+
+	private String sla;
+
+	private Integer _sla_seconds;
 
 	public TaskType() {}
 
@@ -79,12 +64,58 @@ public class TaskType {
 		return this.next;
 	}
 
+	public int getSLA() {
+		if (_sla_seconds == null) {
+			try {
+				initSLA();
+			} catch (SorcererException e) {
+				_sla_seconds = -1;
+			}
+		}
+
+		return _sla_seconds;
+	}
+
+	public void initSLA() throws SorcererException {
+		try {
+			_sla_seconds = parseSLA(sla);
+		} catch (Exception e) {
+			throw new SorcererException("Incorrectly formatted SLA field for task " + this.name, e);
+		}
+	}
+
+	public static int parseSLA(String slaString) throws Exception {
+		if (slaString == null || slaString.trim().length() == 0) {
+			return -1;
+		}
+
+		String trimmed = slaString.trim().toLowerCase();
+
+		char unit = trimmed.charAt(trimmed.length() - 1);
+
+		int num = Integer.parseInt(trimmed.substring(0, trimmed.length() - 2));
+
+		switch (unit) {
+			case 'd':
+				return num * SEC_IN_DAY;
+			case 'h':
+				return num * SEC_IN_HOUR;
+			case 'm':
+				return num * SEC_IN_MINUTE;
+			case 's':
+				return num;
+			default:
+				throw new Exception("Invalid sla unit provided: " + unit);
+		}
+	}
+
 	public String toString() {
 		return Objects.toStringHelper(this)
 				.add("name", this.name)
 				.add("next", this.next)
 				.add("exec", this.exec)
 				.add("criticality", this.criticality.name())
+				.add("sla", this.sla)
 				.toString();
 	}
 
@@ -102,4 +133,32 @@ public class TaskType {
 				&& this.getName().equals(((TaskType) o).getName());
 
 	}
+
+
+	/**
+	 * Supported task execution types
+	 */
+	public static final String FORK_EXEC = "fork";
+	public static final String JOIN_EXEC = "join";
+
+	public static final ImmutableMap<String, Class<? extends Task>> SUPPORTED_EXEC =
+			ImmutableMap.<String, Class<? extends Task>>builder()
+					.put(FORK_EXEC, ForkTask.class)
+					.put(JOIN_EXEC, JoinTask.class)
+					.build();
+
+	/**
+	 * Task criticality
+	 */
+	public enum CRITICALITY {
+		HIGH,
+		LOW
+	}
+
+	/**
+	 *
+	 */
+	private static final int SEC_IN_DAY = 86400;
+	private static final int SEC_IN_HOUR = 3600;
+	private static final int SEC_IN_MINUTE = 60;
 }

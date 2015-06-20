@@ -116,6 +116,14 @@ public class SorcererConfiguration {
 				logger.error(FATAL, "Could not find a class for task " + taskName);
 				success = false;
 			}
+
+			// Check SLA strings
+			try {
+				entry.getValue().initSLA();
+			} catch (SorcererException se) {
+				logger.error(FATAL, "Task SLA could not be initialized", se);
+				success = false;
+			}
 		}
 
 		// Reconcile Pipelines
