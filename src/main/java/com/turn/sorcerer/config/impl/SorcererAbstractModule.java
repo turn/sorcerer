@@ -11,7 +11,9 @@ import com.turn.sorcerer.pipeline.Pipeline;
 import com.turn.sorcerer.pipeline.type.PipelineType;
 import com.turn.sorcerer.status.StatusStorage;
 import com.turn.sorcerer.status.impl.HDFSStatusStorage;
+import com.turn.sorcerer.status.impl.ZookeeperStatusStorage;
 import com.turn.sorcerer.status.type.impl.HDFSStatusStorageType;
+import com.turn.sorcerer.status.type.impl.ZookeeperStatusStorageType;
 import com.turn.sorcerer.task.Task;
 import com.turn.sorcerer.task.type.TaskType;
 import com.turn.sorcerer.util.email.EmailType;
@@ -24,7 +26,7 @@ import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 
 /**
- * Class Description Here
+ * Sorcerer Guice abstract module
  *
  * @author tshiou
  */
@@ -96,8 +98,24 @@ public class SorcererAbstractModule extends AbstractModule {
 		if (module.getStorage().getClass() == HDFSStatusStorageType.class) {
 			bind(String.class).annotatedWith(HDFSStatusStorage.HDFSStorageRoot.class)
 					.toInstance(((HDFSStatusStorageType) module.getStorage()).getRoot());
+		} else if (module.getStorage().getClass() == ZookeeperStatusStorageType.class) {
+			bindZookeeperStorage();
 		}
 	}
 
+	private void bindZookeeperStorage() {
+		bind(String.class).annotatedWith(ZookeeperStatusStorage.StorageRoot.class)
+				.toInstance(((ZookeeperStatusStorageType) module.getStorage()).getRoot());
+		bind(String.class).annotatedWith(ZookeeperStatusStorage.ConnectionString.class)
+				.toInstance(((ZookeeperStatusStorageType) module.getStorage()).getConnectionString());
+		bind(Integer.class).annotatedWith(Names.named(ZookeeperStatusStorage.SESSION_TIMEOUT))
+				.toInstance(((ZookeeperStatusStorageType) module.getStorage()).getSessionTimeout());
+		bind(Integer.class).annotatedWith(Names.named(ZookeeperStatusStorage.CONNECTION_TIMEOUT))
+				.toInstance(((ZookeeperStatusStorageType) module.getStorage()).getConnectionTimeout());
+		bind(Integer.class).annotatedWith(Names.named(ZookeeperStatusStorage.RETRY_DURATION))
+				.toInstance(((ZookeeperStatusStorageType) module.getStorage()).getRetryDuration());
+		bind(Integer.class).annotatedWith(Names.named(ZookeeperStatusStorage.RETRY_INTERVAL))
+				.toInstance(((ZookeeperStatusStorageType) module.getStorage()).getRetryInterval());
+	}
 
 }
