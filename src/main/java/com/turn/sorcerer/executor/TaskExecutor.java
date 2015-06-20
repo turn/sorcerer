@@ -73,7 +73,6 @@ public class TaskExecutor implements Callable<TaskExecutionResult> {
 		// Get instance of task
 		ExecutableTask task = TaskFactory.get().getExecutableTask(this.taskType, this.jobId);
 
-
 		Context context = new Context(jobId, taskArgs);
 
 		// Normal (non-adhoc) pipeline checks
@@ -104,19 +103,20 @@ public class TaskExecutor implements Callable<TaskExecutionResult> {
 			// Skip task if previous error has not been cleared
 			if (task.hasError()) {
 				status.setStatus(ExecutionStatus.ERROR);
-				LOGGER.warn("{} has a previous uncleared error. Exiting", task.name());
+				LOGGER.warn("{} has a previous uncleared error. Exiting", task);
 				return status;
 			}
+		}
 
-			// Parameterize the task
+		// Parameterize the task
+		LOGGER.debug("Parameterizing {}", task.name());
+		task.initialize(context);
 
-			LOGGER.debug("Parameterizing {}", task.name());
-			task.initialize(context);
-
+		if (!adhoc) {
 			// Skip if dependencies are not met
 			if (!task.checkDependencies()) {
 				status.setStatus(ExecutionStatus.DEPENDENCY_FAILURE);
-				LOGGER.debug("{} dependencies are not met. Exiting", task.name());
+				LOGGER.debug("{} dependencies are not met. Exiting", task);
 				return status;
 			}
 		}
@@ -135,7 +135,7 @@ public class TaskExecutor implements Callable<TaskExecutionResult> {
 
 		} catch (SorcererException e) {
 			status.setStatus(ExecutionStatus.ERROR);
-			LOGGER.error(task.name() + "failed", e);
+			LOGGER.error(task.name() + " failed", e);
 			StatusManager.get().commitTaskStatus(taskType, jobId, Status.ERROR);
 
 			throw e;

@@ -136,9 +136,9 @@ class TaskScheduler implements Runnable {
 			// Task so return Error. This needs to be resolved manually.
 			if (StatusManager.get().isTaskRunning(t, jobId)
 					&& runningTasks.contains(t.getName()) == false) {
-				logger.warn("{} has a previous iteration running. Exiting",
-						t.getName());
-				new Emailer(t.getName() + " has a previous iteration running",
+				logger.warn("{}:{} has a previous iteration running. Exiting",
+						t.getName(), jobId);
+				new Emailer(t.getName() + ":" + jobId + " has a previous iteration running",
 						"This needs to be resolved manually").send();
 
 				// Commit error status

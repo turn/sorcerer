@@ -58,8 +58,7 @@ public class TaskCompletionListener implements FutureCallback<TaskExecutionResul
 
 	@Override
 	public void onFailure(Throwable throwable) {
-		logger.error("{} - {} failed!", pipeline, task.getName());
-		logger.trace("Task error", throwable);
+		logger.error("{} - {} failed!", pipeline, task.getName(), throwable);
 		runningTasks.remove(task.getName());
 
 		new Emailer(task.getName() + " failed", new Exception(throwable)).send();

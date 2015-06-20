@@ -128,7 +128,6 @@ public class PipelineScheduler implements Runnable {
 			try {
 				Thread.sleep(1000 * pipelineType.getInterval());
 			} catch (InterruptedException e) {
-				logger.warn("Thread sleep was interrupted", e);
 				Thread.currentThread().interrupt();
 			}
 		}
