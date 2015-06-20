@@ -187,7 +187,7 @@ For more details see [Sorcerer Execution](docs/execution.md) page in the documen
 ## Authors and Contributors
 
 - [Tommy Shiou](https://github.com/tommyshiou)
-- [Margaret Zhang](#)
+- [Margaret Zhang](https://github.com/MargaretZhang)
 - [Arjun Satish](https://github.com/wicknicks)
 
 ## License
