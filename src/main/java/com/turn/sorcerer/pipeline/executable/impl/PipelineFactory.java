@@ -41,7 +41,7 @@ public class PipelineFactory {
 
 	public Pipeline getPipeline(PipelineType type) {
 
-		if (type.getCronString() != null || type.getCronString().length() > 0) {
+		if (type.getCronString() != null && type.getCronString().length() > 0) {
 			return new CronPipeline(type.getCronString());
 		}
 
