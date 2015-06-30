@@ -9,6 +9,7 @@ package com.turn.sorcerer.status.impl;
 
 import com.turn.sorcerer.status.Status;
 import com.turn.sorcerer.status.StatusStorage;
+import com.turn.sorcerer.status.impl.util.PathUtil;
 
 import java.io.IOException;
 import java.lang.annotation.ElementType;
@@ -71,7 +72,7 @@ public class ZookeeperStatusStorage implements StatusStorage {
 
 	@Override
 	public void init() throws IOException {
-		logger.debug("Initializing Zookeeper storage: {}", connectionString);
+		logger.info("Initializing Zookeeper storage: {}", connectionString);
 
 		curator = CuratorFrameworkFactory.newClient(
 				connectionString, sessionTimeout, connectionTimeout,
@@ -79,6 +80,8 @@ public class ZookeeperStatusStorage implements StatusStorage {
 		);
 		curator.start();
 		initialized = true;
+		// Strip slash suffixes
+		this.root = PathUtil.stripPostSlash(root);
 
 		try {
 			ZKPaths.mkdirs(curator.getZookeeperClient().getZooKeeper(), ZKPaths.makePath(root, type));
@@ -89,7 +92,8 @@ public class ZookeeperStatusStorage implements StatusStorage {
 
 	@Override
 	public StatusStorage setType(String type) {
-		this.type = type;
+		// Strip path separator prefix or suffix
+		this.type = PathUtil.stripPrePostSlashes(type);
 		return this;
 	}
 
