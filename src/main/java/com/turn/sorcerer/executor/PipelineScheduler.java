@@ -61,9 +61,9 @@ public class PipelineScheduler implements Runnable {
 
 			// Get prior days
 			List<Integer> iterationsToRun = Lists.newArrayList();
-			for (int sequenceNumber = currIter ;
-			     sequenceNumber >= currIter - pipelineType.getLookback() ;
-			     sequenceNumber-- ) {
+
+			for (int i = 0 ; i <= pipelineType.getLookback() ; i++ ) {
+				int sequenceNumber = iterNoGenerator.getPreviousIterationNumber(currIter, i);
 
 				if (sequenceNumber < 0) {
 					continue;
