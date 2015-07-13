@@ -64,10 +64,10 @@ public class SorcererRegistry {
 		String name = taskType.getName();
 
 		if (tasks.containsKey(name) && tasks.get(name).equals(taskType)) {
-			logger.error("Task name " + name + " is mapped to multiple classes!\n" +
+			logger.error("Task name " + name + " is mapped to multiple task types!\n" +
 					name + " is already mapped to " + tasks.get(name) +
 					" but another mapping " + taskType + " found." +
-					"Task names should be unique to one class.\n"
+					"Task names should be unique to one task type.\n"
 			);
 			return;
 		}
@@ -92,10 +92,10 @@ public class SorcererRegistry {
 		String name = pipelineType.getName();
 
 		if (pipelines.containsKey(name) && pipelines.get(name).equals(pipelineType)) {
-			logger.error("Task name " + name + " is mapped to multiple classes!\n" +
+			logger.error("Pipeline name " + name + " is mapped to multiple pipeline types!\n" +
 							name + " is already mapped to " + pipelines.get(name) +
 							" but another mapping " + pipelineType + " found." +
-							"Task names should be unique to one class.\n"
+							"Pipeline names should be unique to one pipeline type.\n"
 			);
 			return;
 		}
