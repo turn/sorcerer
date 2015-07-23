@@ -204,7 +204,7 @@ public class ZookeeperStatusStorage implements StatusStorage {
 				return;
 			}
 
-			curator.delete().forPath(path);
+			curator.delete().deletingChildrenIfNeeded().forPath(path);
 
 		} catch (Exception e) {
 			throw new IOException(e);

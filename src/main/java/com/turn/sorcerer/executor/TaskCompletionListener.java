@@ -61,7 +61,8 @@ public class TaskCompletionListener implements FutureCallback<TaskExecutionResul
 		logger.error("{} - {} failed!", pipeline, task.getName(), throwable);
 		runningTasks.remove(task.getName());
 
-		new Emailer(task.getName() + " failed", new Exception(throwable)).send();
+		new Emailer(pipeline + ":" + task.getName() + " failed", new Exception(throwable))
+				.send();
 	}
 
 }
