@@ -69,6 +69,7 @@ public class StatusManager {
 			} catch (IOException e) {
 				logger.error("Storage layer unreachable!", e);
 			}
+			return;
 		}
 
 		try {
