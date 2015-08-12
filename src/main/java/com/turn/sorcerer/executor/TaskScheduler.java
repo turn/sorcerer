@@ -11,6 +11,7 @@ import com.turn.sorcerer.pipeline.executable.ExecutablePipeline;
 import com.turn.sorcerer.status.Status;
 import com.turn.sorcerer.status.StatusManager;
 import com.turn.sorcerer.task.type.TaskType;
+import com.turn.sorcerer.util.email.Emailer;
 
 import java.util.Collection;
 import java.util.Map;
@@ -149,13 +150,12 @@ class TaskScheduler implements Runnable {
 			// list, we need to resolve it notify job owners
 			// This will happen if the PipelineExecutor thread was restarted while the task
 			// was still in progress. We don't want to spawn multiple instances of the same
-			// Task so return Error. This needs to be resolved manually.
 			if (StatusManager.get().isTaskRunning(t, jobId)
 					&& runningTasks.contains(t.getName()) == false) {
 				logger.warn("{}:{} has a previous iteration running. Exiting",
 						t.getName(), jobId);
-//				new Emailer(t.getName() + ":" + jobId + " has a previous iteration running",
-//						"This needs to be resolved manually").send();
+				new Emailer(t.getName() + ":" + jobId + " has a previous iteration running",
+						"This needs to be resolved manually").send();
 
 				// Commit error status
 				StatusManager.get().commitTaskStatus(t, jobId, Status.ERROR);

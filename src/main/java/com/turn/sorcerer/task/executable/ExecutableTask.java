@@ -8,12 +8,10 @@ package com.turn.sorcerer.task.executable;
 
 import com.turn.sorcerer.dependency.Dependency;
 import com.turn.sorcerer.exception.SorcererException;
-import com.turn.sorcerer.status.Status;
 import com.turn.sorcerer.status.StatusManager;
 import com.turn.sorcerer.task.Context;
 import com.turn.sorcerer.task.Task;
 import com.turn.sorcerer.task.type.TaskType;
-import com.turn.sorcerer.util.Constants;
 
 import com.google.common.collect.ImmutableList;
 
@@ -23,8 +21,6 @@ import com.google.common.collect.ImmutableList;
  * @author tshiou
  */
 public class ExecutableTask {
-
-	private boolean adhoc = false;
 
 	private final int sequenceNumber;
 	private final TaskType type;
@@ -37,9 +33,6 @@ public class ExecutableTask {
 	}
 
 	public void initialize(Context context) {
-
-		this.adhoc = context.getProperties().getBool(Constants.ADHOC);
-
 		task.init(context);
 	}
 
@@ -64,22 +57,10 @@ public class ExecutableTask {
 
 	public void execute(Context context) throws SorcererException {
 		try {
-			StatusManager.get().commitTaskStatus(this.type, sequenceNumber, Status.IN_PROGRESS);
-
 			task.exec(context);
-
 		} catch (Exception e) {
-			if (!adhoc) {
-				StatusManager.get().commitTaskStatus(
-						this.type, sequenceNumber, Status.ERROR, true);
-			}
-			StatusManager.get()
-					.removeInProgressTaskStatus(this.type, sequenceNumber);
 			throw new SorcererException(e);
 		}
-
-		StatusManager.get().commitTaskStatus(this.type, sequenceNumber, Status.SUCCESS, true);
-		StatusManager.get().removeInProgressTaskStatus(this.type, sequenceNumber);
 
 	}
 

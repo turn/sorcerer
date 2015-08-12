@@ -128,6 +128,7 @@ public class TaskExecutor implements Callable<TaskExecutionResult> {
 			MetricUnit unit = MetricUnit.getMetricUnit(false, task.name(), TASK_START_TIME_METRIC);
 			MetricsMonitor.getInstance().addGenericMetric(unit, taskStartTime);
 
+			StatusManager.get().commitTaskStatus(taskType, jobId, Status.IN_PROGRESS);
 			task.execute(context);
 
 			taskFinishTime = System.currentTimeMillis();
