@@ -47,4 +47,8 @@ public abstract class TestTask implements Task {
 	public Collection<Dependency> getDependencies(int iterNo) {
 		return null;
 	}
+
+	public void abort() {
+		Thread.currentThread().interrupt();
+	}
 }

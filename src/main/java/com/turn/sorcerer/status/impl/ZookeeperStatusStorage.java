@@ -26,6 +26,7 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.RetryUntilElapsed;
 import org.apache.curator.utils.ZKPaths;
+import org.apache.zookeeper.CreateMode;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -233,13 +234,33 @@ public class ZookeeperStatusStorage implements StatusStorage {
 			throws IOException {
 		String path = PATH.join(root, type, identifier, jobId, status);
 
-		try {
-			ZKPaths.mkdirs(curator.getZookeeperClient().getZooKeeper(), path);
+		// Create ephemeral node for in progress
+		if (status == Status.IN_PROGRESS) {
+			// Destroy node if it already exists
+			try {
+				if (curator.checkExists().forPath(path) != null) {
+					curator.delete().forPath(path);
+				}
+			} catch (Exception e) {
+				// ignore exception for this call
+			}
 
-			curator.checkExists().forPath(path).setCtime(time.getMillis());
+			// Create ephemeral node
+			try {
+				curator.create().withMode(CreateMode.EPHEMERAL).forPath(path);
+			} catch (Exception e) {
+				throw new IOException(e);
+			}
 
-		} catch (Exception e) {
-			throw new IOException(e);
+		} else {
+			try {
+				ZKPaths.mkdirs(curator.getZookeeperClient().getZooKeeper(), path);
+
+				curator.checkExists().forPath(path).setCtime(time.getMillis());
+
+			} catch (Exception e) {
+				throw new IOException(e);
+			}
 		}
 
 	}

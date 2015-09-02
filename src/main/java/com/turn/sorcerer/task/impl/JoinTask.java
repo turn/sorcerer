@@ -46,4 +46,9 @@ public class JoinTask implements Task {
 	public List<Dependency> getDependencies(int iterNo) {
 		return Lists.newArrayList();
 	}
+
+	@Override
+	public void abort() {
+		// do nothing
+	}
 }

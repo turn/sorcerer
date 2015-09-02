@@ -8,6 +8,7 @@ package com.turn.sorcerer;
 
 import com.turn.sorcerer.config.impl.SorcererConfiguration;
 import com.turn.sorcerer.exception.SorcererException;
+import com.turn.sorcerer.executor.Abortable;
 import com.turn.sorcerer.executor.PipelineExecutor;
 import com.turn.sorcerer.executor.PipelineScheduler;
 import com.turn.sorcerer.executor.TaskExecutor;
@@ -19,6 +20,8 @@ import com.turn.sorcerer.status.StatusManager;
 import com.turn.sorcerer.task.type.TaskType;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -55,6 +58,9 @@ public class Sorcerer {
 	 * List of pipeline scheduling threads
 	 */
 	private List<ExecutorService> pipelineThreads = Lists.newArrayList();
+	private List<PipelineScheduler> scheduledPipelines = Lists.newArrayList();
+	private Map<String, Abortable> adhocTasks = Maps.newHashMap();
+	private Map<String, Abortable> adhocPipelines = Maps.newHashMap();
 
 	/**
 	 * Private constructor to prevent public instantiation.
@@ -117,16 +123,44 @@ public class Sorcerer {
 				return;
 			}
 
-			logger.info("Starting pipeline {}", pipeline.toString());
-
-			PipelineScheduler pipelineScheduler = new PipelineScheduler(pipeline);
-
-			ExecutorService pipelineThread = Executors.newSingleThreadExecutor();
-			pipelineThread.submit(pipelineScheduler);
-			pipelineThreads.add(pipelineThread);
+			schedulePipeline(pipeline);
 		}
 
 		logger.debug("Exiting Sorcerer scheduling thread");
+	}
+
+	/**
+	 * Schedules pipeline by creating pipeline scheduler thread
+	 */
+	private void schedulePipeline(PipelineType pipeline) {
+		logger.info("Starting pipeline {}", pipeline.toString());
+
+		PipelineScheduler pipelineScheduler = new PipelineScheduler(pipeline);
+
+		ExecutorService pipelineThread = Executors.newSingleThreadExecutor();
+		pipelineThread.submit(pipelineScheduler);
+		pipelineThreads.add(pipelineThread);
+
+		logger.debug("Successfully scheduled pipeline {}", pipeline.toString());
+
+		scheduledPipelines.add(pipelineScheduler);
+	}
+
+	/**
+	 * Abort scheduled pipeline
+	 */
+	private void abortScheduledPipeline(PipelineType pipeline) {
+		logger.info("Aborting pipeline {}", pipeline.toString());
+
+		for (Iterator<PipelineScheduler> iterator = scheduledPipelines.iterator(); iterator.hasNext();) {
+			PipelineScheduler scheduledPipeline = iterator.next();
+			if (scheduledPipeline.getPipelineType().getName().equals(pipeline.getName())) {
+				scheduledPipeline.abort();
+				// Remove the current element from the iterator and the list.
+				iterator.remove();
+			}
+		}
+		logger.debug("Successfully aborted pipeline {}", pipeline.toString());
 	}
 
 	/**
@@ -140,22 +174,19 @@ public class Sorcerer {
 	}
 
 	/**
-	 * Provides a List of pipelines configured to be scheduled by this instance
-	 * of a Sorcerer module
+	 * Provides a List of scheduled pipelines in this instance of a Sorcerer module
 	 *
 	 * @return Returns a List of pipelines
 	 */
 	public Collection<String> getPipelines() {
 
-		Set<PipelineType> pipelines = injector.getPipelines();
-
-		if (pipelines == null) {
+		if (scheduledPipelines == null) {
 			return null;
 		}
 
 		List<String> pipelineNames = Lists.newArrayList();
-		for (PipelineType p : pipelines) {
-			pipelineNames.add(p.getName());
+		for (PipelineScheduler scheduler : scheduledPipelines) {
+			pipelineNames.add(scheduler.getPipelineType().getName());
 		}
 
 		return pipelineNames;
@@ -279,6 +310,73 @@ public class Sorcerer {
 	}
 
 	/**
+	 * Abort task
+	 *
+	 * @param taskName   Name of task type
+	 * @param iterNo      Iteration number
+	 * @param scheduled  If true, sorcerer will search scheduled pipelines for task
+	 */
+	public void abortTask(String taskName, int iterNo, boolean scheduled)
+			throws IllegalArgumentException {
+		if (scheduled) {
+			// TODO: not supported yet
+		} else {
+			if (this.adhocTasks.containsKey(taskName + iterNo)) {
+				this.adhocTasks.get(taskName + iterNo).abort();
+			} else {
+				throw new IllegalArgumentException("Could not find running task for " + taskName);
+			}
+		}
+	}
+
+	/**
+	 * Abort pipeline
+	 *
+	 * @param pipelineName Name of pipeline type
+	 * @param iterNo        Iteration number
+	 * @param scheduled     If true, sorcerer will search scheduled pipelines
+	 */
+	public void abortPipeline(String pipelineName, int iterNo, boolean scheduled) {
+		if (scheduled) {
+			PipelineType pipelineType = injector.getPipelineType(pipelineName);
+			if (pipelineType == null) {
+				throw new IllegalArgumentException("Could not find pipeline for " + pipelineName);
+			}
+			abortScheduledPipeline(pipelineType);
+		} else {
+			if (this.adhocPipelines.containsKey(pipelineName + iterNo)) {
+				this.adhocPipelines.get(pipelineName + iterNo).abort();
+			} else {
+				throw new IllegalArgumentException("Could not find running pipeline for " + pipelineName);
+			}
+		}
+	}
+
+	/**
+	 * Schedule pipeline
+	 *
+	 * @param pipelineName Name of pipeline
+	 * @param iterNo        Iteration number
+	 * @param adhoc         Adhoc pipeline
+	 */
+	public void schedulePipeline(String pipelineName, int iterNo, boolean adhoc)
+			throws IllegalArgumentException {
+
+		PipelineType type = injector.getPipelineType(pipelineName);
+
+		if (type == null) {
+			throw new IllegalArgumentException("Could not find pipeline definition for name " + pipelineName);
+		}
+
+		if (adhoc) {
+			runPipeline(pipelineName, iterNo, new HashMap<String, Map<String, String>>(), false);
+		} else {
+			schedulePipeline(type);
+		}
+
+	}
+
+	/**
 	 * Executes a single task
 	 *
 	 * @param taskName      Name of task to execute
@@ -291,6 +389,7 @@ public class Sorcerer {
 		TaskExecutor executor = new TaskExecutor(type, iterNo, arguments, true);
 
 		Executors.newSingleThreadExecutor().submit(executor);
+		this.adhocTasks.put(taskName + iterNo, executor);
 	}
 
 	/**
@@ -311,6 +410,7 @@ public class Sorcerer {
 		PipelineExecutor executor = new PipelineExecutor(type, iterNo, taskArgMap, true, overwrite);
 
 		Executors.newSingleThreadExecutor().submit(executor);
+		this.adhocPipelines.put(pipelineName + iterNo, executor);
 	}
 
 	/**

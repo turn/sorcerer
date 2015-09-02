@@ -8,18 +8,15 @@ package com.turn.sorcerer.executor;
 
 import com.turn.sorcerer.injector.SorcererInjector;
 import com.turn.sorcerer.pipeline.executable.ExecutablePipeline;
-import com.turn.sorcerer.status.Status;
 import com.turn.sorcerer.status.StatusManager;
 import com.turn.sorcerer.task.type.TaskType;
-import com.turn.sorcerer.util.email.Emailer;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executors;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
@@ -38,13 +35,14 @@ class TaskScheduler implements Runnable {
 			LoggerFactory.getLogger(TaskScheduler.class);
 
 	private Map<TaskType, Map<String, String>> taskArgMap;
-	private Set<String> runningTasks;
+	private ConcurrentMap<String, TaskExecutor> runningTasks;
 
 	private final ExecutablePipeline pipeline;
 	private final int jobId;
 
 	private boolean ignoreTaskComplete = false;
 	private boolean adhoc = false;
+	private boolean abort = false;
 
 	private ListeningExecutorService executionPool;
 
@@ -67,12 +65,16 @@ class TaskScheduler implements Runnable {
 		} else {
 			executionPool = MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
 		}
-		runningTasks = Sets.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
+		runningTasks = Maps.newConcurrentMap();
 
 	}
 
 	@Override
 	public void run() {
+		if (abort) {
+			return;
+		}
+
 		logger.debug("Scheduling tasks for {}", pipeline);
 		logger.debug("pipeline: {} - Task map size: {}",
 				pipeline, pipeline.getTaskGraph().size());
@@ -85,7 +87,7 @@ class TaskScheduler implements Runnable {
 			// Check if all task dependencies are satisfied
 			TaskType t = SorcererInjector.get().getTaskType(entry.getKey());
 
-			if (runningTasks.contains(t.getName())) {
+			if (runningTasks.containsKey(t.getName())) {
 				continue;
 			}
 
@@ -102,13 +104,9 @@ class TaskScheduler implements Runnable {
 				}
 
 				if (ignoreTaskComplete) {
-					if (pipeline.getTaskCompletionMap()
-							.get(taskDependency.getName()) == false) {
-						logger.debug("pipeline: {} - dependency for " +
-										"{}, {} not complete",
-								pipeline,
-								t.getName(),
-								taskDependency.getName());
+					if (pipeline.getTaskCompletionMap().get(taskDependency.getName()) == false) {
+						logger.debug("pipeline: {} - dependency for {}, {} not complete",
+								pipeline, t.getName(), taskDependency.getName());
 						dependencySuccess = false;
 					}
 				} else {
@@ -119,13 +117,8 @@ class TaskScheduler implements Runnable {
 							dependencySuccess = false;
 						}
 					} else if (StatusManager.get().isTaskComplete(taskDependency, jobId) == false) {
-						logger.debug("pipeline: {} - dependency for " +
-										"{}, {}:{} not complete",
-								pipeline,
-								t.getName(),
-								jobId,
-								taskDependency.getName());
-
+						logger.debug("pipeline: {} - dependency for {}, {}:{} not complete",
+								pipeline, t.getName(), jobId, taskDependency.getName());
 						dependencySuccess = false;
 					}
 				}
@@ -150,17 +143,17 @@ class TaskScheduler implements Runnable {
 			// list, we need to resolve it notify job owners
 			// This will happen if the PipelineExecutor thread was restarted while the task
 			// was still in progress. We don't want to spawn multiple instances of the same
-			if (StatusManager.get().isTaskRunning(t, jobId)
-					&& runningTasks.contains(t.getName()) == false) {
-				logger.warn("{}:{} has a previous iteration running. Exiting",
-						t.getName(), jobId);
-				new Emailer(t.getName() + ":" + jobId + " has a previous iteration running",
-						"This needs to be resolved manually").send();
-
-				// Commit error status
-				StatusManager.get().commitTaskStatus(t, jobId, Status.ERROR);
-				continue;
-			}
+//			if (t.isExternalJob() &&
+//					StatusManager.get().isTaskRunning(t, jobId) &&
+//					runningTasks.contains(t.getName()) == false) {
+//				logger.warn("{}:{} is already running.", t.getName(), jobId);
+//				new Emailer(t.getName() + ":" + jobId + " has a previous iteration running",
+//						"This needs to be resolved manually").send();
+//
+//				// Commit error status
+//				StatusManager.get().commitTaskStatus(t, jobId, Status.ERROR);
+//				continue;
+//			}
 
 			// Submit task for execution
 			logger.debug("pipeline:{} - Submitting task {}",
@@ -168,7 +161,7 @@ class TaskScheduler implements Runnable {
 
 			TaskExecutor executor = new TaskExecutor(t, jobId, taskArgMap.get(t), adhoc);
 			ListenableFuture<TaskExecutionResult> future = executionPool.submit(executor);
-			runningTasks.add(t.getName());
+			runningTasks.put(t.getName(), executor);
 			TaskCompletionListener callback = new TaskCompletionListener(t, runningTasks, pipeline);
 			Futures.addCallback(future, callback);
 			submittedTasks++;
@@ -180,6 +173,17 @@ class TaskScheduler implements Runnable {
 
 	public void abort() {
 		logger.debug("Shutting down pipeline executor for {}", pipeline);
-		executionPool.shutdown();
+		this.abort = true;
+		executionPool.shutdownNow();
+	}
+
+	public boolean isTaskRunning(String taskName) {
+		return this.runningTasks.containsKey(taskName);
+	}
+
+	public void abortTask(String taskName) {
+		if (isTaskRunning(taskName)) {
+			this.runningTasks.get(taskName).abort();
+		}
 	}
 }

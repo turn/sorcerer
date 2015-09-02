@@ -38,6 +38,8 @@ public class TaskType {
 
 	private Integer _sla_seconds;
 
+	private boolean external = false;
+
 	public TaskType() {}
 
 	// For mocking and testing
@@ -66,6 +68,10 @@ public class TaskType {
 
 	public CRITICALITY getCriticality() {
 		return this.criticality;
+	}
+
+	public boolean isExternalJob() {
+		return this.external;
 	}
 
 	public int getSLA() {

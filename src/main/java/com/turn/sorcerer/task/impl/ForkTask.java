@@ -49,5 +49,8 @@ public class ForkTask implements Task {
 		return Lists.newArrayList();
 	}
 
-
+	@Override
+	public void abort() {
+		// do nothing
+	}
 }

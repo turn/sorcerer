@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author tshiou
  */
-public class PipelineExecutor implements Runnable {
+public class PipelineExecutor implements Runnable, Abortable {
 
 
 	private static final Logger logger =

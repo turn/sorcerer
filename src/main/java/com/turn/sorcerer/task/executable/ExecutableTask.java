@@ -64,6 +64,12 @@ public class ExecutableTask {
 
 	}
 
+	public void abort() {
+		if (this.task != null) {
+			this.task.abort();
+		}
+	}
+
 	public boolean isCompleted() {
 		return StatusManager.get().isTaskComplete(this.type, this.sequenceNumber);
 	}

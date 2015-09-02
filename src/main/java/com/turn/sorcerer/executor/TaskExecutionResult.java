@@ -27,7 +27,8 @@ public class TaskExecutionResult {
 		COMPLETED,
 		DEPENDENCY_FAILURE,
 		RUNNING,
-		ERROR
+		ERROR,
+		ABORTED
 	}
 
 	private TaskType taskType;

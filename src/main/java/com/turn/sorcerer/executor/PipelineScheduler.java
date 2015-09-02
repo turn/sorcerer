@@ -51,6 +51,10 @@ public class PipelineScheduler implements Runnable {
 		this.iterNoGenerator = PipelineFactory.get().getPipeline(pipelineType);
 	}
 
+	public PipelineType getPipelineType() {
+		return this.pipelineType;
+	}
+
 	@Override
 	public void run() {
 

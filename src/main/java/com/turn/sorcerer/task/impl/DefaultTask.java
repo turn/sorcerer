@@ -33,4 +33,9 @@ public class DefaultTask implements Task {
 	public List<Dependency> getDependencies(int iterNo) {
 		return null;
 	}
+
+	@Override
+	public void abort(){
+		// do nothing
+	}
 }

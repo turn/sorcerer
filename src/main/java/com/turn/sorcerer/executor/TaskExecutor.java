@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author tshiou
  */
-public class TaskExecutor implements Callable<TaskExecutionResult> {
+public class TaskExecutor implements Callable<TaskExecutionResult>, Abortable {
 	private static final Logger LOGGER =
 			LoggerFactory.getLogger(TaskExecutor.class);
 
@@ -46,7 +46,9 @@ public class TaskExecutor implements Callable<TaskExecutionResult> {
 	protected long taskStartTime = 0;
 	protected long taskFinishTime = 0;
 
+	private ExecutableTask task = null;
 	private int jobId;
+	private boolean abortSignalReceived = false;
 	protected final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd");
 
 	private TypedDictionary taskArgs;
@@ -71,7 +73,7 @@ public class TaskExecutor implements Callable<TaskExecutionResult> {
 		status.setStatus(TaskExecutionResult.ExecutionStatus.SUCCESS);
 
 		// Get instance of task
-		ExecutableTask task = TaskFactory.get().getExecutableTask(this.taskType, this.jobId);
+		this.task = TaskFactory.get().getExecutableTask(this.taskType, this.jobId);
 
 		Context context = new Context(jobId, taskArgs);
 
@@ -144,7 +146,11 @@ public class TaskExecutor implements Callable<TaskExecutionResult> {
 			StatusManager.get().removeInProgressTaskStatus(taskType, jobId);
 		}
 
-		StatusManager.get().commitTaskStatus(taskType, jobId, Status.SUCCESS, true);
+		if (abortSignalReceived) {
+			status.setStatus(ExecutionStatus.ABORTED);
+		} else {
+			StatusManager.get().commitTaskStatus(taskType, jobId, Status.SUCCESS, true);
+		}
 
 		return status;
 	}
@@ -155,5 +161,16 @@ public class TaskExecutor implements Callable<TaskExecutionResult> {
 		MetricsMonitor.getInstance().addSuccessMetric(unit, jobId);
 		unit = MetricUnit.getMetricUnit(graphiteOnly, taskName, COMPLETION_TIME_METRIC);
 		MetricsMonitor.getInstance().addGenericMetric(unit, taskFinishTime - taskStartTime);
+	}
+
+	/**
+	 * Attempt to gracefully abort task
+	 */
+	public void abort() {
+		this.abortSignalReceived = true;
+		LOGGER.info("Abort signal received, attempting to abort {}", task.toString());
+		if (this.task != null) {
+			this.task.abort();
+		}
 	}
 }

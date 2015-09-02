@@ -8,10 +8,12 @@ package com.turn.sorcerer.executor;
 
 import com.turn.sorcerer.executor.TaskExecutionResult.ExecutionStatus;
 import com.turn.sorcerer.pipeline.executable.ExecutablePipeline;
+import com.turn.sorcerer.status.Status;
+import com.turn.sorcerer.status.StatusManager;
 import com.turn.sorcerer.task.type.TaskType;
 import com.turn.sorcerer.util.email.Emailer;
 
-import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 
 import com.google.common.util.concurrent.FutureCallback;
 import org.slf4j.Logger;
@@ -28,11 +30,11 @@ public class TaskCompletionListener implements FutureCallback<TaskExecutionResul
 			LoggerFactory.getLogger(TaskCompletionListener.class);
 
 	private final TaskType task;
-	private Set<String> runningTasks;
+	private ConcurrentMap<String, TaskExecutor> runningTasks;
 	private ExecutablePipeline pipeline;
 
 	public TaskCompletionListener(TaskType taskType,
-	                              Set<String> runningTasks,
+	                              ConcurrentMap<String, TaskExecutor> runningTasks,
 	                              ExecutablePipeline pipeline) {
 		this.task = taskType;
 		this.runningTasks = runningTasks;
@@ -50,6 +52,8 @@ public class TaskCompletionListener implements FutureCallback<TaskExecutionResul
 		if (ExecutionStatus.SUCCESS.equals(executionStatus)) {
 			// If success, then update pipeline status
 			pipeline.updateTaskAsComplete(t);
+		} else if (ExecutionStatus.ABORTED.equals(executionStatus)) {
+			logger.info("Task {}:{} aborted", task, pipeline.getId());
 		}
 
 		// Update running tasks
@@ -60,6 +64,7 @@ public class TaskCompletionListener implements FutureCallback<TaskExecutionResul
 	public void onFailure(Throwable throwable) {
 		logger.error("{} - {} failed!", pipeline, task.getName(), throwable);
 		runningTasks.remove(task.getName());
+		StatusManager.get().commitTaskStatus(task, pipeline.getId(), Status.ERROR);
 
 		new Emailer(pipeline + ":" + task.getName() + " failed", new Exception(throwable))
 				.send();

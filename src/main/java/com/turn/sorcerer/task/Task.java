@@ -128,4 +128,6 @@ public interface Task {
 	 * @return Collection of Dependency objects
 	 */
 	Collection<Dependency> getDependencies(int iterNo);
+
+	void abort();
 }
