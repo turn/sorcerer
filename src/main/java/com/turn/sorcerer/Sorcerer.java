@@ -253,7 +253,7 @@ public class Sorcerer {
 			List<String> next = type.getNextTaskNames();
 
 			if (next == null) {
-				return;
+				continue;
 			}
 
 			nextTasks.addAll(next);
