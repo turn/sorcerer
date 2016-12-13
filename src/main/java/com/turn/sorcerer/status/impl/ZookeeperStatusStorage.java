@@ -247,7 +247,10 @@ public class ZookeeperStatusStorage implements StatusStorage {
 
 			// Create ephemeral node
 			try {
-				curator.create().withMode(CreateMode.EPHEMERAL).forPath(path);
+				curator.create()
+						.creatingParentsIfNeeded()
+						.withMode(CreateMode.EPHEMERAL)
+						.forPath(path);
 			} catch (Exception e) {
 				throw new IOException(e);
 			}
