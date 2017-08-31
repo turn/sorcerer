@@ -12,7 +12,7 @@
 
     <groupId>com.turn.sorcerer</groupId>
     <artifactId>sorcerer</artifactId>
-    <version>0.1</version>
+    <version>0.1.1</version>
     <packaging>jar</packaging>
 
     <name>Sorcerer</name>
@@ -43,6 +43,11 @@
         <url>git@github.com:turn/sorcerer.git</url>
      </scm>
 
+	 <properties>
+	     <maven.javadoc.skip>true</maven.javadoc.skip>
+	 </properties>
+	
+	 
     <build>
         <plugins>
             <plugin>
@@ -107,6 +112,8 @@
             </plugin>
 
             <!-- deploy to the OSS Nexus server -->
+			
+			<!--
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
@@ -118,7 +125,7 @@
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
-
+			-->
             <!-- javadoc -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -154,18 +161,19 @@
         </plugins>
     </build>
 
-    <distributionManagement>
-        <repository>
-            <id>ossrh</id>
-            <name>Nexus Release repository</name>
-            <url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <name>Sonatype Nexus Snapshots</name>
-            <url>http://oss.sonatype.org/content/repositories/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
+	<distributionManagement>
+		<repository>
+			<id>turn</id>
+			<url>http://maven.turn.com/content/repositories/turn</url>
+		</repository>
+		<snapshotRepository>
+			<uniqueVersion>true</uniqueVersion>
+			<id>snapshots</id>
+			<name>Turn internal Maven repository for snapshots</name>
+			<url>http://maven.turn.com/content/repositories/snapshots</url>
+			<layout>default</layout>
+		</snapshotRepository>
+	</distributionManagement>
 
     <dependencies>
         <dependency>
