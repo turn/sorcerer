@@ -6,7 +6,7 @@
 
 package com.turn.sorcerer.pipeline.type;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 /**
  * Represents a pipeline definition. Instances are automatically created and
@@ -53,7 +53,7 @@ public class PipelineType {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 				.add("name", this.name)
 				.add("init", this.init)
 				.toString();
