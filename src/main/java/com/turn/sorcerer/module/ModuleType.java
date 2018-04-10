@@ -11,7 +11,7 @@ import com.turn.sorcerer.util.email.EmailType;
 
 import java.util.List;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 /**
  * Module type object created from Sorcerer configuration
@@ -52,7 +52,7 @@ public class ModuleType {
 	}
 
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 				.add("name", this.name)
 				.add("pipelines", this.pipelines)
 				.add("email", this.email.isEnabled() ? this.email.toString() : "disabled")
